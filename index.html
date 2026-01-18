@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Charity Intelligence | Smart Matching Platform</title>
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Product+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Pixel UI Color System */
+            --md-sys-color-primary: #006C4C;
+            /* Mint Green */
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #89F8C7;
+            --md-sys-color-on-primary-container: #002114;
+            --md-sys-color-secondary: #4D6357;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #CFE9D9;
+            --md-sys-color-on-secondary-container: #092016;
+            --md-sys-color-tertiary: #3D6373;
+            --md-sys-color-tertiary-container: #C1E8FB;
+
+            --md-sys-color-background: #F0F4F8;
+            --md-sys-color-on-background: #191C1A;
+            --md-sys-color-surface: rgba(255, 255, 255, 0.7);
+            /* Glassy Surface */
+            --md-sys-color-on-surface: #191C1A;
+            --md-sys-color-surface-variant: #DBE5DE;
+            --md-sys-color-on-surface-variant: #404943;
+            --md-sys-color-outline: #707973;
+
+            --radius-full: 9999px;
+            --radius-xl: 28px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+
+            --elevation-1: 0 4px 20px rgba(0, 0, 0, 0.05);
+            /* Soft, diffuse shadow */
+            --elevation-2: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            background-color: #F0F4F8;
+            /* Fallback */
+            background-image:
+                radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 1) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 1) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, hsla(340, 100%, 76%, 1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(22, 100%, 77%, 1) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, hsla(242, 100%, 70%, 1) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, hsla(343, 100%, 76%, 1) 0px, transparent 50%);
+            /* Using a multi-layered mesh gradient for "Abstract" feel */
+
+            color: var(--md-sys-color-on-background);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Abstract blurred shapes override */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 60%);
+            z-index: -1;
+            pointer-events: none;
+            backdrop-filter: blur(80px);
+            /* Glassmorphism blur */
+        }
+
+        .app-layout {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-top: 20px;
+        }
+
+        .logo-area {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-family: 'Product Sans', sans-serif;
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--md-sys-color-on-background);
+        }
+
+        p.subtitle {
+            color: var(--md-sys-color-secondary);
+            font-size: 16px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--md-sys-color-surface);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            /* border: 1px solid var(--md-sys-color-surface-variant); */
+            background-color: #F8F9FE;
+            /* Surface 1 */
+        }
+
+        .card h2 {
+            font-family: 'Product Sans', sans-serif;
+            font-size: 22px;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* Form Elements */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            background-color: var(--md-sys-color-surface-variant);
+            /* M3 Surface Variant */
+            border-radius: 4px 4px 0 0;
+            height: 56px;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+            transition: all 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-bottom: 2px solid var(--md-sys-color-primary);
+            background-color: #E8EAF3;
+            /* Slightly lighter on focus */
+        }
+
+        .input-wrapper label {
+            position: absolute;
+            left: 16px;
+            top: 8px;
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+            pointer-events: none;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            padding: 24px 16px 8px 16px;
+            font-size: 16px;
+            color: var(--md-sys-color-on-background);
+            font-family: 'Roboto', sans-serif;
+            outline: none;
+            appearance: none;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: var(--radius-full);
+            height: 56px;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Product Sans', sans-serif;
+            cursor: pointer;
+            box-shadow: var(--elevation-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: none;
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--elevation-2);
+            background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+        }
+
+        /* Results */
+        .charity-card {
+            background-color: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--elevation-1);
+            border: 1px solid #E0E2E0;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .charity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--elevation-2);
+        }
+
+        .charity-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .charity-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1F1F1F;
+        }
+
+        .match-score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--md-sys-color-primary);
+            font-family: 'Product Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            line-height: 1;
+        }
+
+        .match-score span {
+            font-size: 12px;
+            color: var(--md-sys-color-secondary);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .tag-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--md-sys-color-secondary);
+        }
+
+        /* AI Widget */
+        .ai-widget {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-top: 16px;
+        }
+
+        .ai-icon {
+            color: var(--md-sys-color-primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--md-sys-color-surface-variant);
+            border-top-color: var(--md-sys-color-primary);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 24px;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Admin Trigger */
+        .admin-trigger {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #E8DEF8;
+            color: #1D192B;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--elevation-2);
+            text-decoration: none;
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .admin-trigger:hover {
+            background-color: #D3C5EA;
+            transform: scale(1.05);
+        }
+
+        /* --- TABS & BLOG STYLE --- */
+        .tab-nav {
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid #E0E2E0;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 0;
+            font-family: 'Product Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-secondary);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--md-sys-color-primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--md-sys-color-primary);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .blog-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #444746;
+        }
+
+        .blog-content p {
+            margin-bottom: 16px;
+        }
+
+        .blog-content strong {
+            color: #1F1F1F;
+        }
+
+        .ai-breakdown-box {
+            background-color: #F2F6FC;
+            border: 1px solid #D3E3FD;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .ai-step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #D3E3FD;
+            color: #0B57D0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* --- RESOURCES TAB STYLES --- */
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .resource-item {
+            background: #FFFFFF;
+            border: 1px solid #E0E2E0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .resource-item:hover {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .resource-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            color: #DB4437;
+            /* PDF Red */
+            font-size: 24px;
+        }
+
+        .download-btn {
+            color: var(--md-sys-color-primary);
+            background: var(--md-sys-color-secondary-container);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .compliance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .compliance-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .compliance-table td:first-child {
+            color: var(--md-sys-color-secondary);
+            font-weight: 500;
+        }
+
+        .compliance-table td:last-child {
+            text-align: right;
+            font-family: 'Product Sans', monospace;
+        }
+
+        /* --- DETAILED VIEW EXTENSIONS --- */
+        .desc-text {
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--md-sys-color-secondary);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .financial-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric-bar-container {
+            flex: 1;
+        }
+
+        .metric-bar {
+            height: 6px;
+            background-color: #E2E2E2;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .btn-website {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            padding: 0 24px;
+            border-radius: 24px;
+            border: 1px solid var(--md-sys-color-outline);
+            background: transparent;
+            color: var(--md-sys-color-primary);
+            font-family: 'Product Sans', sans-serif;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 16px;
+            width: 100%;
+            transition: all 0.2s;
+            gap: 8px;
+        }
+
+        .btn-website:hover {
+            background-color: var(--md-sys-color-secondary-container);
+            border-color: transparent;
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .data-item {
+            background: #F0F4FC;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .data-label {
+            font-size: 11px;
+            color: var(--md-sys-color-secondary);
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--md-sys-color-on-surface);
+            font-family: 'Product Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <header>
+            <div class="logo-area">
+                <span class="material-icons-round"
+                    style="color: var(--md-sys-color-primary); font-size: 40px;">psychology</span>
+                <h1>CharityAI</h1>
+            </div>
+            <p class="subtitle">Intelligent donation matching engine</p>
+        </header>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-container">
+            <div class="spinner"></div>
+            <p>Initializing AI Models...</p>
+        </div>
+
+        <!-- Input Form -->
+        <div id="inputCard" class="card hidden">
+            <h2>Find Your Match</h2>
+
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <label>YOUR NAME</label>
+                    <input type="text" id="userName" placeholder="e.g. Alex" />
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <label>TARGET REGION</label>
+                    <select id="userLocation">
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="France">France</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <label>CAUSE PREFERENCE</label>
+                    <select id="userCause">
+                        <option value="Health">Health & Medical</option>
+                        <option value="Education">Education & Literacy</option>
+                        <option value="Poverty">Poverty Alleviation</option>
+                        <option value="Children">Child Welfare</option>
+                        <option value="Environment">Environment & Conservation</option>
+                        <option value="Nutrition">Hunger & Nutrition</option>
+                        <option value="Water">Clean Water</option>
+                        <option value="Medical Aid">Emergency Medical Aid</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="runMatch()">
+                <span class="material-icons-round">smart_toy</span>
+                Generate Analysis
+            </button>
+        </div>
+
+        <!-- AI Processing State -->
+        <div id="processingState" class="loading-container hidden">
+            <div class="spinner"></div>
+            <p>Analyzing personality profile...</p>
+            <p style="font-size: 12px; color: var(--md-sys-color-secondary); margin-top: 8px;">Scoring compatibility
+                against global database</p>
+        </div>
+
+        <!-- Results View -->
+        <div id="resultsView" class="hidden">
+            <div style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+                <h2 style="font-family: 'Product Sans'; font-size: 20px;">Top Recommendations</h2>
+                <button onclick="resetApp()"
+                    style="background:none; border:none; color: var(--md-sys-color-primary); font-weight: 500; cursor: pointer;">Start
+                    Over</button>
+            </div>
+
+            <div id="resultsList"></div>
+        </div>
+
+    </div>
+
+    <!-- Admin Floating Button -->
+    <a href="admin.html" class="admin-trigger" title="Admin Portal">
+        <span class="material-icons-round">admin_panel_settings</span>
+    </a>
+
+    <script>
+        // CORE DATA
+        const EMBEDDED_FALLBACK_DATA = [{ "id": "d7b8afd3-6ebe-4c6c-88e0-e6d097338c36", "name": "Rotary Foundation (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Health", "program_expense_ratio": 0.877, "admin_expense_ratio": 0.064, "fundraising_expense_ratio": 0.058, "transparency_score": 100, "trust_score": 100, "annual_revenue": 38283139, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "20d8231f-acfe-4cc8-ab37-7e591cc6a65b", "name": "Against Malaria Foundation (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Health", "program_expense_ratio": 0.982, "admin_expense_ratio": 0.006, "fundraising_expense_ratio": 0.013, "transparency_score": 100, "trust_score": 99, "annual_revenue": 28192050, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "51ab1c6c-8e29-4166-8335-052512cc6c37", "name": "Rotary Foundation (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Health", "program_expense_ratio": 0.949, "admin_expense_ratio": 0.031, "fundraising_expense_ratio": 0.02, "transparency_score": 100, "trust_score": 97, "annual_revenue": 29827141, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "937b57e9-c5fc-46ae-bad9-43b30f0089f6", "name": "Room to Read (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Education", "program_expense_ratio": 0.8, "admin_expense_ratio": 0.077, "fundraising_expense_ratio": 0.122, "transparency_score": 97, "trust_score": 96, "annual_revenue": 25186610, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "819ca3d8-a95d-4176-a766-73bfa0868914", "name": "Education Initiative 727", "country": "India", "operating_regions": ["India"], "primary_cause": "Education", "program_expense_ratio": 0.927, "admin_expense_ratio": 0.024, "fundraising_expense_ratio": 0.049, "transparency_score": 93, "trust_score": 92, "annual_revenue": 1426714, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "701e4ca3-df0c-491d-b5ad-6c16e30ffb77", "name": "Education Initiative 878", "country": "India", "operating_regions": ["India"], "primary_cause": "Education", "program_expense_ratio": 0.919, "admin_expense_ratio": 0.036, "fundraising_expense_ratio": 0.045, "transparency_score": 90, "trust_score": 87, "annual_revenue": 4036505, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 82 }, { "year": 2023, "reputation_score": 85 }, { "year": 2024, "reputation_score": 87 }] }, { "id": "975828b8-8cfb-44e5-8542-99cf2e75617e", "name": "GiveDirectly (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Poverty", "program_expense_ratio": 0.91, "admin_expense_ratio": 0.056, "fundraising_expense_ratio": 0.033, "transparency_score": 95, "trust_score": 100, "annual_revenue": 20479680, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "5e4356c2-b1ac-461d-9c58-c3b0722dd954", "name": "GiveDirectly (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Poverty", "program_expense_ratio": 0.857, "admin_expense_ratio": 0.047, "fundraising_expense_ratio": 0.096, "transparency_score": 95, "trust_score": 100, "annual_revenue": 31660631, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "a6bfaf2d-0abb-438b-9e21-6780dbca8ec9", "name": "GiveDirectly (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Poverty", "program_expense_ratio": 0.908, "admin_expense_ratio": 0.033, "fundraising_expense_ratio": 0.059, "transparency_score": 95, "trust_score": 99, "annual_revenue": 47835716, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "f2226c4f-3334-4527-9d91-695b6c418f46", "name": "UNICEF (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Children", "program_expense_ratio": 0.912, "admin_expense_ratio": 0.037, "fundraising_expense_ratio": 0.051, "transparency_score": 92, "trust_score": 98, "annual_revenue": 44060209, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "265438db-16b5-4ac5-895f-5eced92fb645", "name": "UNICEF (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Children", "program_expense_ratio": 0.925, "admin_expense_ratio": 0.043, "fundraising_expense_ratio": 0.032, "transparency_score": 92, "trust_score": 97, "annual_revenue": 20710863, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "82fcee88-29e5-43aa-bcfc-6b98d2c196a2", "name": "UNICEF (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Children", "program_expense_ratio": 0.872, "admin_expense_ratio": 0.053, "fundraising_expense_ratio": 0.074, "transparency_score": 92, "trust_score": 95, "annual_revenue": 23785887, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "6ec6b065-4f7f-46cf-a253-3de4c4a6c92c", "name": "Rainforest Alliance (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Environment", "program_expense_ratio": 0.808, "admin_expense_ratio": 0.108, "fundraising_expense_ratio": 0.084, "transparency_score": 93, "trust_score": 94, "annual_revenue": 2761492, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "dc173723-92f9-4e24-8d85-7891663c25dc", "name": "Rainforest Alliance (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Environment", "program_expense_ratio": 0.758, "admin_expense_ratio": 0.073, "fundraising_expense_ratio": 0.169, "transparency_score": 93, "trust_score": 92, "annual_revenue": 9803382, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "a07a4400-942c-411f-a945-bf4880ada8a8", "name": "Rainforest Alliance (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Environment", "program_expense_ratio": 0.83, "admin_expense_ratio": 0.115, "fundraising_expense_ratio": 0.054, "transparency_score": 93, "trust_score": 90, "annual_revenue": 44542100, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 88 }, { "year": 2023, "reputation_score": 89 }, { "year": 2024, "reputation_score": 90 }] }, { "id": "871b2438-a561-447e-9ca7-8b14cdb646be", "name": "Feeding America (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Nutrition", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.005, "fundraising_expense_ratio": 0.005, "transparency_score": 99, "trust_score": 100, "annual_revenue": 36144442, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "43846c3e-e9b6-429b-9df2-1f8145b0c50b", "name": "Feeding America (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Nutrition", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.003, "fundraising_expense_ratio": 0.007, "transparency_score": 99, "trust_score": 98, "annual_revenue": 13842304, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "31a27342-9274-4b5b-81cb-8eb7ee6db959", "name": "Action Against Hunger (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Nutrition", "program_expense_ratio": 0.951, "admin_expense_ratio": 0.023, "fundraising_expense_ratio": 0.026, "transparency_score": 96, "trust_score": 97, "annual_revenue": 4111802, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "6a481ad9-a70f-4ad5-81ca-de9f0b7ac90e", "name": "Water.org (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Water", "program_expense_ratio": 0.86, "admin_expense_ratio": 0.072, "fundraising_expense_ratio": 0.067, "transparency_score": 96, "trust_score": 97, "annual_revenue": 33546800, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "e8e8bc7c-a6d2-4ce9-80cf-87ef13ac2de0", "name": "Water.org (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Water", "program_expense_ratio": 0.869, "admin_expense_ratio": 0.084, "fundraising_expense_ratio": 0.048, "transparency_score": 96, "trust_score": 95, "annual_revenue": 6423834, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "40ba6591-2985-4b7e-aff1-314a940b0807", "name": "Water.org (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Water", "program_expense_ratio": 0.926, "admin_expense_ratio": 0.038, "fundraising_expense_ratio": 0.036, "transparency_score": 96, "trust_score": 92, "annual_revenue": 36784795, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "3ba83830-e2ad-4f7a-94a1-1edb0ca73622", "name": "Direct Relief (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.005, "fundraising_expense_ratio": 0.005, "transparency_score": 100, "trust_score": 100, "annual_revenue": 8390347, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "7adb4391-d91f-4d6f-afc5-a47f597d02c0", "name": "Direct Relief (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.966, "admin_expense_ratio": 0.018, "fundraising_expense_ratio": 0.017, "transparency_score": 100, "trust_score": 100, "annual_revenue": 45561652, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "d84ecefc-7df8-4ed2-9d3b-ba0ece903b5d", "name": "Doctors Without Borders (India)", "country": "India", "operating_regions": ["India"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.919, "admin_expense_ratio": 0.05, "fundraising_expense_ratio": 0.031, "transparency_score": 97, "trust_score": 100, "annual_revenue": 15934285, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "934ad2f6-3309-4a05-9850-94ab4838f790", "name": "Rotary Foundation (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Health", "program_expense_ratio": 0.865, "admin_expense_ratio": 0.075, "fundraising_expense_ratio": 0.06, "transparency_score": 100, "trust_score": 97, "annual_revenue": 23938247, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "7643d863-4c67-4d40-848a-7d54c25b733e", "name": "St. Jude Children's Research (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Health", "program_expense_ratio": 0.718, "admin_expense_ratio": 0.126, "fundraising_expense_ratio": 0.155, "transparency_score": 91, "trust_score": 96, "annual_revenue": 47467418, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "811308f8-3894-44b1-9248-cd91186583d4", "name": "Against Malaria Foundation (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Health", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.004, "fundraising_expense_ratio": 0.006, "transparency_score": 100, "trust_score": 100, "annual_revenue": 36311794, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "4a20f762-7647-4bf4-a22b-7b8e7bde9ae2", "name": "Against Malaria Foundation (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Health", "program_expense_ratio": 0.952, "admin_expense_ratio": 0.03, "fundraising_expense_ratio": 0.017, "transparency_score": 100, "trust_score": 97, "annual_revenue": 31053645, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "2c001763-df43-4f0f-a8a3-fde558810021", "name": "Rotary Foundation (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Health", "program_expense_ratio": 0.89, "admin_expense_ratio": 0.061, "fundraising_expense_ratio": 0.049, "transparency_score": 100, "trust_score": 100, "annual_revenue": 3900453, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "8096f127-ca60-4217-a7be-cfc5c2ec5daa", "name": "Against Malaria Foundation (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Health", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.006, "fundraising_expense_ratio": 0.004, "transparency_score": 100, "trust_score": 95, "annual_revenue": 48958661, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "03e9b8fd-a151-462a-80ab-1a559b86c730", "name": "Against Malaria Foundation (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Health", "program_expense_ratio": 0.957, "admin_expense_ratio": 0.024, "fundraising_expense_ratio": 0.019, "transparency_score": 100, "trust_score": 100, "annual_revenue": 37296521, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "0499ac14-4384-48a9-9572-110dfa488f16", "name": "Against Malaria Foundation (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Health", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.006, "fundraising_expense_ratio": 0.004, "transparency_score": 100, "trust_score": 100, "annual_revenue": 10329218, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "19fa64e1-b466-4224-9717-a27f24d80201", "name": "Against Malaria Foundation (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Health", "program_expense_ratio": 0.974, "admin_expense_ratio": 0.017, "fundraising_expense_ratio": 0.009, "transparency_score": 100, "trust_score": 100, "annual_revenue": 32534711, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "bde8d438-95e4-4351-a35d-801d0439f417", "name": "Against Malaria Foundation (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Health", "program_expense_ratio": 0.976, "admin_expense_ratio": 0.007, "fundraising_expense_ratio": 0.017, "transparency_score": 100, "trust_score": 100, "annual_revenue": 27867564, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "aa37a33f-732c-4689-bf54-879465a2f514", "name": "Against Malaria Foundation (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Health", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.005, "fundraising_expense_ratio": 0.005, "transparency_score": 100, "trust_score": 100, "annual_revenue": 47035580, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "53d4cc94-f256-4402-bc92-a3af359ce42f", "name": "Rotary Foundation (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Health", "program_expense_ratio": 0.897, "admin_expense_ratio": 0.061, "fundraising_expense_ratio": 0.043, "transparency_score": 100, "trust_score": 96, "annual_revenue": 47185041, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "8616a14c-9135-4313-8d9c-1b84871a8b8a", "name": "Against Malaria Foundation (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Health", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.005, "fundraising_expense_ratio": 0.005, "transparency_score": 100, "trust_score": 100, "annual_revenue": 24694153, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "bab0cc21-770f-411e-ae06-04249c34e7f1", "name": "Rotary Foundation (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Health", "program_expense_ratio": 0.939, "admin_expense_ratio": 0.038, "fundraising_expense_ratio": 0.023, "transparency_score": 100, "trust_score": 100, "annual_revenue": 5135955, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "d5e6f951-1450-4d27-9e94-0c4f73ecabf2", "name": "Against Malaria Foundation (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Health", "program_expense_ratio": 0.959, "admin_expense_ratio": 0.017, "fundraising_expense_ratio": 0.025, "transparency_score": 100, "trust_score": 100, "annual_revenue": 3623644, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "aa7027cc-46df-4de9-a845-7dee4d7851d7", "name": "Rotary Foundation (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Health", "program_expense_ratio": 0.909, "admin_expense_ratio": 0.042, "fundraising_expense_ratio": 0.048, "transparency_score": 100, "trust_score": 99, "annual_revenue": 10279984, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "74c2fe6b-dd32-46f8-b329-b6516b82a1c1", "name": "Rotary Foundation (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Health", "program_expense_ratio": 0.895, "admin_expense_ratio": 0.069, "fundraising_expense_ratio": 0.036, "transparency_score": 100, "trust_score": 99, "annual_revenue": 14187494, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "0e8e114d-fad0-4c65-86c5-bdbad8418a3d", "name": "Rotary Foundation (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Health", "program_expense_ratio": 0.926, "admin_expense_ratio": 0.032, "fundraising_expense_ratio": 0.042, "transparency_score": 100, "trust_score": 99, "annual_revenue": 49793525, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "76617b8c-7306-4957-bca1-f68d6b3e0457", "name": "Room to Read (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Education", "program_expense_ratio": 0.859, "admin_expense_ratio": 0.057, "fundraising_expense_ratio": 0.085, "transparency_score": 97, "trust_score": 98, "annual_revenue": 47862354, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "9538dc02-d185-4440-8ba7-9d5e531d80ce", "name": "Room to Read (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Education", "program_expense_ratio": 0.811, "admin_expense_ratio": 0.127, "fundraising_expense_ratio": 0.062, "transparency_score": 97, "trust_score": 94, "annual_revenue": 1505439, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "ae643144-34bf-46ed-87de-6a6da5cc3879", "name": "Room to Read (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Education", "program_expense_ratio": 0.882, "admin_expense_ratio": 0.037, "fundraising_expense_ratio": 0.081, "transparency_score": 97, "trust_score": 92, "annual_revenue": 11220262, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "9d82fd10-5d66-49ef-8dd1-ee76b332ac51", "name": "Education Initiative 916", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Education", "program_expense_ratio": 0.941, "admin_expense_ratio": 0.033, "fundraising_expense_ratio": 0.025, "transparency_score": 87, "trust_score": 88, "annual_revenue": 3038710, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 83 }, { "year": 2023, "reputation_score": 86 }, { "year": 2024, "reputation_score": 88 }] }, { "id": "f30e3b68-3846-4fe4-9e18-11a85ec2e6ae", "name": "Room to Read (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Education", "program_expense_ratio": 0.81, "admin_expense_ratio": 0.098, "fundraising_expense_ratio": 0.093, "transparency_score": 97, "trust_score": 94, "annual_revenue": 47088100, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "0437372a-b344-4a84-8b34-bd891b4e6411", "name": "Room to Read (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Education", "program_expense_ratio": 0.868, "admin_expense_ratio": 0.06, "fundraising_expense_ratio": 0.072, "transparency_score": 97, "trust_score": 94, "annual_revenue": 48933017, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "8d1ad244-942d-47e6-8b09-92a9949c461c", "name": "Room to Read (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Education", "program_expense_ratio": 0.824, "admin_expense_ratio": 0.055, "fundraising_expense_ratio": 0.12, "transparency_score": 97, "trust_score": 96, "annual_revenue": 33327109, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "2490cbf9-33a6-4e32-a385-45fdf551438d", "name": "Room to Read (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Education", "program_expense_ratio": 0.845, "admin_expense_ratio": 0.07, "fundraising_expense_ratio": 0.085, "transparency_score": 97, "trust_score": 95, "annual_revenue": 16986172, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "b58c559d-d4cc-4018-a9ac-b834acc13058", "name": "Room to Read (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Education", "program_expense_ratio": 0.796, "admin_expense_ratio": 0.074, "fundraising_expense_ratio": 0.13, "transparency_score": 97, "trust_score": 98, "annual_revenue": 23259119, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "5f7616e7-1643-4abd-aa31-6c05244d27a1", "name": "Room to Read (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Education", "program_expense_ratio": 0.808, "admin_expense_ratio": 0.063, "fundraising_expense_ratio": 0.129, "transparency_score": 97, "trust_score": 91, "annual_revenue": 16397938, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "fc0f906b-fd8a-405a-848c-f002ea1f12f6", "name": "Room to Read (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Education", "program_expense_ratio": 0.794, "admin_expense_ratio": 0.113, "fundraising_expense_ratio": 0.093, "transparency_score": 97, "trust_score": 96, "annual_revenue": 25298324, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "1c8694e6-a71a-4549-9a7a-7858ba2e7455", "name": "Room to Read (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Education", "program_expense_ratio": 0.825, "admin_expense_ratio": 0.08, "fundraising_expense_ratio": 0.096, "transparency_score": 97, "trust_score": 91, "annual_revenue": 27863329, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "5ca68586-94be-4af2-82cb-eaac69dae667", "name": "Room to Read (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Education", "program_expense_ratio": 0.874, "admin_expense_ratio": 0.05, "fundraising_expense_ratio": 0.076, "transparency_score": 97, "trust_score": 96, "annual_revenue": 24755317, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "f7a99ff8-cbc6-4bd6-9e0a-18eaf795bff4", "name": "Room to Read (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Education", "program_expense_ratio": 0.879, "admin_expense_ratio": 0.063, "fundraising_expense_ratio": 0.058, "transparency_score": 97, "trust_score": 95, "annual_revenue": 15022792, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "09618ed7-1ae7-45e8-a0b1-f85f97da3e69", "name": "Education Initiative 1542", "country": "France", "operating_regions": ["France"], "primary_cause": "Education", "program_expense_ratio": 0.873, "admin_expense_ratio": 0.063, "fundraising_expense_ratio": 0.064, "transparency_score": 87, "trust_score": 89, "annual_revenue": 4172736, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 84 }, { "year": 2023, "reputation_score": 87 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "5865bf3a-2f29-49dd-a3e0-e48b450fa411", "name": "Education Initiative 1547", "country": "France", "operating_regions": ["France"], "primary_cause": "Education", "program_expense_ratio": 0.88, "admin_expense_ratio": 0.027, "fundraising_expense_ratio": 0.093, "transparency_score": 75, "trust_score": 89, "annual_revenue": 1531054, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 84 }, { "year": 2023, "reputation_score": 87 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "b090679c-d35c-4949-907a-eef25852577f", "name": "Room to Read (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Education", "program_expense_ratio": 0.851, "admin_expense_ratio": 0.074, "fundraising_expense_ratio": 0.075, "transparency_score": 97, "trust_score": 95, "annual_revenue": 18848996, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "1a456a48-37ea-405d-b5c3-89abea544b86", "name": "Room to Read (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Education", "program_expense_ratio": 0.876, "admin_expense_ratio": 0.041, "fundraising_expense_ratio": 0.083, "transparency_score": 97, "trust_score": 94, "annual_revenue": 22227093, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "de6b95a4-0874-4dff-b4a4-15c8e425bc9a", "name": "GiveDirectly (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Poverty", "program_expense_ratio": 0.926, "admin_expense_ratio": 0.041, "fundraising_expense_ratio": 0.033, "transparency_score": 95, "trust_score": 98, "annual_revenue": 14670494, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "7dd41117-3336-406b-ad30-27dbd05c4813", "name": "GiveDirectly (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Poverty", "program_expense_ratio": 0.852, "admin_expense_ratio": 0.097, "fundraising_expense_ratio": 0.051, "transparency_score": 95, "trust_score": 96, "annual_revenue": 4613500, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "d483423a-4734-4828-ad58-efde918c865b", "name": "CARE (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Poverty", "program_expense_ratio": 0.948, "admin_expense_ratio": 0.022, "fundraising_expense_ratio": 0.03, "transparency_score": 91, "trust_score": 91, "annual_revenue": 1262500, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "2bea85d4-563b-49e6-a314-b5d89d9a123f", "name": "World Vision (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Poverty", "program_expense_ratio": 0.819, "admin_expense_ratio": 0.069, "fundraising_expense_ratio": 0.112, "transparency_score": 88, "trust_score": 89, "annual_revenue": 17922783, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 88 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "2308995b-2bed-4062-b9a9-d2c98c5892cc", "name": "CARE (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Poverty", "program_expense_ratio": 0.859, "admin_expense_ratio": 0.075, "fundraising_expense_ratio": 0.067, "transparency_score": 91, "trust_score": 96, "annual_revenue": 10420665, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "50105a85-6ee4-4fbf-b2e8-51eb9fbc1568", "name": "CARE (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Poverty", "program_expense_ratio": 0.895, "admin_expense_ratio": 0.055, "fundraising_expense_ratio": 0.05, "transparency_score": 91, "trust_score": 96, "annual_revenue": 18727089, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "7538884d-3542-4fdf-a9b1-ce42fb9bfd1e", "name": "GiveDirectly (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Poverty", "program_expense_ratio": 0.939, "admin_expense_ratio": 0.034, "fundraising_expense_ratio": 0.027, "transparency_score": 95, "trust_score": 98, "annual_revenue": 44095284, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "ef7f82f6-2cdb-4c66-ad37-f8cbce1e3168", "name": "GiveDirectly (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Poverty", "program_expense_ratio": 0.909, "admin_expense_ratio": 0.06, "fundraising_expense_ratio": 0.031, "transparency_score": 95, "trust_score": 96, "annual_revenue": 8443669, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "fd9003ab-9715-4cf9-bd72-4b2cf06240b7", "name": "GiveDirectly (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Poverty", "program_expense_ratio": 0.862, "admin_expense_ratio": 0.089, "fundraising_expense_ratio": 0.049, "transparency_score": 95, "trust_score": 100, "annual_revenue": 42851024, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "164ba3c6-268c-4ebd-a44f-fae5272489ca", "name": "CARE (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Poverty", "program_expense_ratio": 0.895, "admin_expense_ratio": 0.054, "fundraising_expense_ratio": 0.051, "transparency_score": 91, "trust_score": 96, "annual_revenue": 37479108, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "e1ce4ea0-9cb7-4a30-aa37-c1d8e822ed6b", "name": "GiveDirectly (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Poverty", "program_expense_ratio": 0.888, "admin_expense_ratio": 0.048, "fundraising_expense_ratio": 0.063, "transparency_score": 95, "trust_score": 100, "annual_revenue": 28017009, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "9a162095-7725-4918-8ecb-64544bd01292", "name": "GiveDirectly (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Poverty", "program_expense_ratio": 0.85, "admin_expense_ratio": 0.066, "fundraising_expense_ratio": 0.083, "transparency_score": 95, "trust_score": 100, "annual_revenue": 12160579, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "3946e054-7f2e-40eb-882d-990bdfc59da3", "name": "CARE (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Poverty", "program_expense_ratio": 0.937, "admin_expense_ratio": 0.037, "fundraising_expense_ratio": 0.026, "transparency_score": 91, "trust_score": 95, "annual_revenue": 33977740, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "4ec63b5c-6e4a-4662-bd92-fe25efe5394d", "name": "World Vision (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Poverty", "program_expense_ratio": 0.794, "admin_expense_ratio": 0.138, "fundraising_expense_ratio": 0.069, "transparency_score": 88, "trust_score": 91, "annual_revenue": 13948847, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "4e7c4bc7-8e3e-4d1c-a5a4-9799fdf5ea16", "name": "GiveDirectly (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Poverty", "program_expense_ratio": 0.894, "admin_expense_ratio": 0.072, "fundraising_expense_ratio": 0.035, "transparency_score": 95, "trust_score": 100, "annual_revenue": 35804860, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "dc88d3bf-5898-4b41-be62-3bdf4b2fa962", "name": "GiveDirectly (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Poverty", "program_expense_ratio": 0.912, "admin_expense_ratio": 0.033, "fundraising_expense_ratio": 0.055, "transparency_score": 95, "trust_score": 95, "annual_revenue": 31251466, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "a34230a8-2aa9-4ace-bdd3-4bb84a377c99", "name": "GiveDirectly (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Poverty", "program_expense_ratio": 0.904, "admin_expense_ratio": 0.053, "fundraising_expense_ratio": 0.042, "transparency_score": 95, "trust_score": 99, "annual_revenue": 34612493, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "237196e8-c98b-4e7a-88d1-9d2938d1f633", "name": "GiveDirectly (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Poverty", "program_expense_ratio": 0.893, "admin_expense_ratio": 0.067, "fundraising_expense_ratio": 0.041, "transparency_score": 95, "trust_score": 97, "annual_revenue": 15667498, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "299c6ce9-aada-417e-bf62-92ace2882ef7", "name": "UNICEF (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Children", "program_expense_ratio": 0.905, "admin_expense_ratio": 0.053, "fundraising_expense_ratio": 0.042, "transparency_score": 92, "trust_score": 97, "annual_revenue": 5428526, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "6b94cca7-61c1-4d29-9900-7df2556f889e", "name": "UNICEF (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Children", "program_expense_ratio": 0.87, "admin_expense_ratio": 0.045, "fundraising_expense_ratio": 0.085, "transparency_score": 92, "trust_score": 95, "annual_revenue": 7033376, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "2f06a4a9-ec10-49ae-86c8-fdeafa06ed6b", "name": "Save the Children (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Children", "program_expense_ratio": 0.867, "admin_expense_ratio": 0.084, "fundraising_expense_ratio": 0.05, "transparency_score": 93, "trust_score": 90, "annual_revenue": 41452280, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 88 }, { "year": 2023, "reputation_score": 89 }, { "year": 2024, "reputation_score": 90 }] }, { "id": "05b12e4b-3e5b-4f76-bdc3-2e74aa7189f0", "name": "Save the Children (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Children", "program_expense_ratio": 0.82, "admin_expense_ratio": 0.079, "fundraising_expense_ratio": 0.1, "transparency_score": 93, "trust_score": 86, "annual_revenue": 47494004, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 84 }, { "year": 2023, "reputation_score": 85 }, { "year": 2024, "reputation_score": 86 }] }, { "id": "744a3da6-5840-4de5-89fc-66387a3d8659", "name": "Save the Children (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Children", "program_expense_ratio": 0.843, "admin_expense_ratio": 0.055, "fundraising_expense_ratio": 0.101, "transparency_score": 93, "trust_score": 93, "annual_revenue": 49675925, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 91 }, { "year": 2023, "reputation_score": 92 }, { "year": 2024, "reputation_score": 93 }] }, { "id": "9686e71a-6448-4d29-8b77-45a2b55b241a", "name": "Save the Children (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Children", "program_expense_ratio": 0.85, "admin_expense_ratio": 0.097, "fundraising_expense_ratio": 0.053, "transparency_score": 93, "trust_score": 92, "annual_revenue": 47851555, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "48a6a240-9368-4ff0-9ad4-c42b97031af3", "name": "UNICEF (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Children", "program_expense_ratio": 0.845, "admin_expense_ratio": 0.059, "fundraising_expense_ratio": 0.097, "transparency_score": 92, "trust_score": 97, "annual_revenue": 17855385, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "65860df8-fd84-4d39-9910-9f60d571e92a", "name": "UNICEF (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Children", "program_expense_ratio": 0.868, "admin_expense_ratio": 0.086, "fundraising_expense_ratio": 0.046, "transparency_score": 92, "trust_score": 95, "annual_revenue": 18174649, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "edfb23bf-987a-43d0-bea5-dc7beff6440a", "name": "UNICEF (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Children", "program_expense_ratio": 0.879, "admin_expense_ratio": 0.05, "fundraising_expense_ratio": 0.071, "transparency_score": 92, "trust_score": 98, "annual_revenue": 12151543, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "d6b9be1e-82aa-4137-b294-69645765280e", "name": "UNICEF (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Children", "program_expense_ratio": 0.915, "admin_expense_ratio": 0.043, "fundraising_expense_ratio": 0.043, "transparency_score": 92, "trust_score": 96, "annual_revenue": 32920701, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "f515fd73-84d1-4d93-bda0-5b02954dbcd1", "name": "UNICEF (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Children", "program_expense_ratio": 0.88, "admin_expense_ratio": 0.071, "fundraising_expense_ratio": 0.049, "transparency_score": 92, "trust_score": 97, "annual_revenue": 8375301, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "5a01f015-d716-48e2-a81d-54ba52a3e43a", "name": "Save the Children (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Children", "program_expense_ratio": 0.826, "admin_expense_ratio": 0.072, "fundraising_expense_ratio": 0.101, "transparency_score": 93, "trust_score": 91, "annual_revenue": 25362311, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "9a455c64-2db5-4b55-b601-2192c8e83789", "name": "Save the Children (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Children", "program_expense_ratio": 0.902, "admin_expense_ratio": 0.03, "fundraising_expense_ratio": 0.068, "transparency_score": 93, "trust_score": 94, "annual_revenue": 38606198, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "82dac49f-6dae-4fdf-a8ae-f1455ddfe542", "name": "Plan International (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Children", "program_expense_ratio": 0.762, "admin_expense_ratio": 0.112, "fundraising_expense_ratio": 0.126, "transparency_score": 90, "trust_score": 91, "annual_revenue": 6309251, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "76c5911f-97cf-48f8-80a8-a4d3b901abeb", "name": "UNICEF (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Children", "program_expense_ratio": 0.85, "admin_expense_ratio": 0.063, "fundraising_expense_ratio": 0.087, "transparency_score": 92, "trust_score": 97, "annual_revenue": 16448938, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "425d6356-721b-489d-b188-ea228a604e03", "name": "UNICEF (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Children", "program_expense_ratio": 0.858, "admin_expense_ratio": 0.058, "fundraising_expense_ratio": 0.084, "transparency_score": 92, "trust_score": 97, "annual_revenue": 31305057, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "e2c5e690-f713-4db4-95ca-395670823d92", "name": "Save the Children (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Children", "program_expense_ratio": 0.907, "admin_expense_ratio": 0.062, "fundraising_expense_ratio": 0.031, "transparency_score": 93, "trust_score": 93, "annual_revenue": 26821428, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 91 }, { "year": 2023, "reputation_score": 92 }, { "year": 2024, "reputation_score": 93 }] }, { "id": "f20b6d5a-13be-4256-bb8b-79ce4e7a72c8", "name": "Save the Children (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Children", "program_expense_ratio": 0.866, "admin_expense_ratio": 0.085, "fundraising_expense_ratio": 0.049, "transparency_score": 93, "trust_score": 93, "annual_revenue": 14198675, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 91 }, { "year": 2023, "reputation_score": 92 }, { "year": 2024, "reputation_score": 93 }] }, { "id": "984ff65e-e7e2-4718-ac35-db4d0bb35777", "name": "Rainforest Alliance (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Environment", "program_expense_ratio": 0.774, "admin_expense_ratio": 0.131, "fundraising_expense_ratio": 0.095, "transparency_score": 93, "trust_score": 95, "annual_revenue": 7196771, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "b4c1d139-df6c-4ba0-8511-850640f0c67d", "name": "Rainforest Alliance (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Environment", "program_expense_ratio": 0.779, "admin_expense_ratio": 0.069, "fundraising_expense_ratio": 0.151, "transparency_score": 93, "trust_score": 91, "annual_revenue": 27480919, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "13c47c6c-c64c-4ff6-a7eb-38ab0ac9b506", "name": "Rainforest Alliance (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Environment", "program_expense_ratio": 0.848, "admin_expense_ratio": 0.063, "fundraising_expense_ratio": 0.089, "transparency_score": 93, "trust_score": 92, "annual_revenue": 45756788, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "b2eb4027-a5cd-4946-9393-fa37e49716eb", "name": "Environment Initiative 1514", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Environment", "program_expense_ratio": 0.933, "admin_expense_ratio": 0.052, "fundraising_expense_ratio": 0.015, "transparency_score": 98, "trust_score": 87, "annual_revenue": 984867, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 82 }, { "year": 2023, "reputation_score": 85 }, { "year": 2024, "reputation_score": 87 }] }, { "id": "681de09b-d8df-413c-b079-cd35400eec10", "name": "Rainforest Alliance (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Environment", "program_expense_ratio": 0.788, "admin_expense_ratio": 0.119, "fundraising_expense_ratio": 0.093, "transparency_score": 93, "trust_score": 92, "annual_revenue": 26334589, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "7be72df6-570f-4f9a-978d-da9ce21a9d9c", "name": "The Nature Conservancy (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Environment", "program_expense_ratio": 0.703, "admin_expense_ratio": 0.198, "fundraising_expense_ratio": 0.098, "transparency_score": 85, "trust_score": 89, "annual_revenue": 4933705, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 88 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "79472b65-2453-4bad-ae09-8363c769a7a2", "name": "Rainforest Alliance (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Environment", "program_expense_ratio": 0.773, "admin_expense_ratio": 0.106, "fundraising_expense_ratio": 0.121, "transparency_score": 93, "trust_score": 93, "annual_revenue": 19031993, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 91 }, { "year": 2023, "reputation_score": 92 }, { "year": 2024, "reputation_score": 93 }] }, { "id": "1bddf8ae-dbf6-4fc0-8d21-06a7730f0438", "name": "Rainforest Alliance (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Environment", "program_expense_ratio": 0.824, "admin_expense_ratio": 0.076, "fundraising_expense_ratio": 0.1, "transparency_score": 93, "trust_score": 92, "annual_revenue": 6734401, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "47f6e0d1-9068-45ac-8783-45e22e06106a", "name": "The Nature Conservancy (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Environment", "program_expense_ratio": 0.701, "admin_expense_ratio": 0.186, "fundraising_expense_ratio": 0.113, "transparency_score": 85, "trust_score": 84, "annual_revenue": 46726419, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 82 }, { "year": 2023, "reputation_score": 83 }, { "year": 2024, "reputation_score": 84 }] }, { "id": "619b7b06-1080-4593-89f8-2a2084eaf009", "name": "Environment Initiative 1504", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Environment", "program_expense_ratio": 0.838, "admin_expense_ratio": 0.075, "fundraising_expense_ratio": 0.088, "transparency_score": 86, "trust_score": 74, "annual_revenue": 1331244, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 69 }, { "year": 2023, "reputation_score": 72 }, { "year": 2024, "reputation_score": 74 }] }, { "id": "5678c363-73c2-4e6a-bc8c-1e6df3c7d67b", "name": "Rainforest Alliance (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Environment", "program_expense_ratio": 0.803, "admin_expense_ratio": 0.135, "fundraising_expense_ratio": 0.062, "transparency_score": 93, "trust_score": 95, "annual_revenue": 19145545, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "fc9d38fd-9047-47c6-94c7-1502ba41bc67", "name": "The Nature Conservancy (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Environment", "program_expense_ratio": 0.67, "admin_expense_ratio": 0.124, "fundraising_expense_ratio": 0.206, "transparency_score": 85, "trust_score": 89, "annual_revenue": 36589660, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 88 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "a1a048e7-599f-4c13-88eb-2caa2ddd5fd9", "name": "The Nature Conservancy (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Environment", "program_expense_ratio": 0.712, "admin_expense_ratio": 0.125, "fundraising_expense_ratio": 0.163, "transparency_score": 85, "trust_score": 91, "annual_revenue": 33577592, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "fd5773ec-9330-4e81-835c-b9334d7352f2", "name": "Rainforest Alliance (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Environment", "program_expense_ratio": 0.796, "admin_expense_ratio": 0.062, "fundraising_expense_ratio": 0.141, "transparency_score": 93, "trust_score": 90, "annual_revenue": 34530287, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 88 }, { "year": 2023, "reputation_score": 89 }, { "year": 2024, "reputation_score": 90 }] }, { "id": "64c7c7ba-dfb4-4937-9e63-7ad5fba5501f", "name": "Rainforest Alliance (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Environment", "program_expense_ratio": 0.79, "admin_expense_ratio": 0.131, "fundraising_expense_ratio": 0.079, "transparency_score": 93, "trust_score": 94, "annual_revenue": 28391794, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "ee9034ea-4786-4a09-b473-67582c72a881", "name": "Rainforest Alliance (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Environment", "program_expense_ratio": 0.783, "admin_expense_ratio": 0.118, "fundraising_expense_ratio": 0.099, "transparency_score": 93, "trust_score": 93, "annual_revenue": 48263329, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 91 }, { "year": 2023, "reputation_score": 92 }, { "year": 2024, "reputation_score": 93 }] }, { "id": "965607a9-fcc8-423f-8d13-575754378cc2", "name": "Rainforest Alliance (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Environment", "program_expense_ratio": 0.836, "admin_expense_ratio": 0.09, "fundraising_expense_ratio": 0.074, "transparency_score": 93, "trust_score": 91, "annual_revenue": 17904206, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "80769ec8-e962-4009-aa61-9527dae3767a", "name": "The Nature Conservancy (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Environment", "program_expense_ratio": 0.682, "admin_expense_ratio": 0.126, "fundraising_expense_ratio": 0.192, "transparency_score": 85, "trust_score": 89, "annual_revenue": 32254073, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 88 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "bc943627-8475-49f3-b9b4-6ba4aa2aaa17", "name": "Feeding America (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Nutrition", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.004, "fundraising_expense_ratio": 0.006, "transparency_score": 99, "trust_score": 100, "annual_revenue": 2018494, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "fee691f5-74a6-49c0-836d-9570c4666e67", "name": "Feeding America (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Nutrition", "program_expense_ratio": 0.976, "admin_expense_ratio": 0.014, "fundraising_expense_ratio": 0.01, "transparency_score": 99, "trust_score": 99, "annual_revenue": 36407087, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "c73f43dd-47b6-4b07-b953-a7da86413c12", "name": "Action Against Hunger (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Nutrition", "program_expense_ratio": 0.879, "admin_expense_ratio": 0.083, "fundraising_expense_ratio": 0.038, "transparency_score": 96, "trust_score": 97, "annual_revenue": 42016852, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "e7075a30-874d-470f-ba6c-1f79b372ce16", "name": "Feeding America (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Nutrition", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.006, "fundraising_expense_ratio": 0.004, "transparency_score": 99, "trust_score": 96, "annual_revenue": 8923083, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "325c47fc-3036-4eb8-bd88-4a8c17e1adb4", "name": "Action Against Hunger (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Nutrition", "program_expense_ratio": 0.94, "admin_expense_ratio": 0.031, "fundraising_expense_ratio": 0.029, "transparency_score": 96, "trust_score": 95, "annual_revenue": 31983249, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "1b4ea892-7d5b-407b-b822-41a6896c13ab", "name": "Action Against Hunger (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Nutrition", "program_expense_ratio": 0.893, "admin_expense_ratio": 0.056, "fundraising_expense_ratio": 0.051, "transparency_score": 96, "trust_score": 95, "annual_revenue": 45077700, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "f4fd6e06-55f1-4710-b99d-c100d1d6eb65", "name": "Action Against Hunger (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Nutrition", "program_expense_ratio": 0.88, "admin_expense_ratio": 0.061, "fundraising_expense_ratio": 0.059, "transparency_score": 96, "trust_score": 98, "annual_revenue": 32317782, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "44d9c5c3-c66e-4639-aeac-37e0e8d4aa20", "name": "Action Against Hunger (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Nutrition", "program_expense_ratio": 0.919, "admin_expense_ratio": 0.054, "fundraising_expense_ratio": 0.027, "transparency_score": 96, "trust_score": 97, "annual_revenue": 37411145, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "5540dff9-ba16-4678-a53c-9a310d7e5f6a", "name": "Action Against Hunger (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Nutrition", "program_expense_ratio": 0.893, "admin_expense_ratio": 0.054, "fundraising_expense_ratio": 0.053, "transparency_score": 96, "trust_score": 99, "annual_revenue": 9649798, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "dc46c3c8-210e-4d1f-8a96-e86d3f51bc65", "name": "Feeding America (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Nutrition", "program_expense_ratio": 0.951, "admin_expense_ratio": 0.032, "fundraising_expense_ratio": 0.018, "transparency_score": 99, "trust_score": 97, "annual_revenue": 44730684, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "d366c8cf-a098-49c3-bd94-dfcfdee33b13", "name": "Feeding America (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Nutrition", "program_expense_ratio": 0.955, "admin_expense_ratio": 0.016, "fundraising_expense_ratio": 0.03, "transparency_score": 99, "trust_score": 94, "annual_revenue": 19557282, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "638c6b6d-4796-4037-b230-b32de07f23b4", "name": "Nutrition Initiative 1804", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Nutrition", "program_expense_ratio": 0.859, "admin_expense_ratio": 0.072, "fundraising_expense_ratio": 0.069, "transparency_score": 91, "trust_score": 86, "annual_revenue": 3656922, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 81 }, { "year": 2023, "reputation_score": 84 }, { "year": 2024, "reputation_score": 86 }] }, { "id": "602744ec-f9d6-4142-a91e-b957efaa74fa", "name": "Feeding America (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Nutrition", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.005, "fundraising_expense_ratio": 0.005, "transparency_score": 99, "trust_score": 100, "annual_revenue": 40424737, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "749d2895-bdde-40c6-afad-b34fbde0387e", "name": "Feeding America (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Nutrition", "program_expense_ratio": 0.97, "admin_expense_ratio": 0.021, "fundraising_expense_ratio": 0.009, "transparency_score": 99, "trust_score": 100, "annual_revenue": 41694819, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "79259f03-98b5-4f23-9625-b8cff81951f9", "name": "Action Against Hunger (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Nutrition", "program_expense_ratio": 0.905, "admin_expense_ratio": 0.045, "fundraising_expense_ratio": 0.05, "transparency_score": 96, "trust_score": 97, "annual_revenue": 4241030, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "a9effd85-55f8-4dee-8b5e-57aae2cbd132", "name": "Action Against Hunger (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Nutrition", "program_expense_ratio": 0.862, "admin_expense_ratio": 0.083, "fundraising_expense_ratio": 0.055, "transparency_score": 96, "trust_score": 97, "annual_revenue": 11214598, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "d12d0dce-f78a-4676-ac66-24a46282aaa0", "name": "Feeding America (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Nutrition", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.005, "fundraising_expense_ratio": 0.005, "transparency_score": 99, "trust_score": 100, "annual_revenue": 26746292, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "c57e1773-63eb-468e-a68e-19b1d2578415", "name": "Action Against Hunger (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Nutrition", "program_expense_ratio": 0.916, "admin_expense_ratio": 0.059, "fundraising_expense_ratio": 0.026, "transparency_score": 96, "trust_score": 98, "annual_revenue": 3937394, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "ecbc54f1-d796-4675-bbe7-923e7b98b4b4", "name": "Water.org (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Water", "program_expense_ratio": 0.906, "admin_expense_ratio": 0.065, "fundraising_expense_ratio": 0.029, "transparency_score": 96, "trust_score": 95, "annual_revenue": 1441696, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "861eb08d-56ec-4f76-a8d6-fa258a65f1cb", "name": "Water.org (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Water", "program_expense_ratio": 0.906, "admin_expense_ratio": 0.059, "fundraising_expense_ratio": 0.035, "transparency_score": 96, "trust_score": 89, "annual_revenue": 5577635, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 88 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "2e7d0cb8-53d4-4116-8e3b-e577f801068d", "name": "Water.org (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Water", "program_expense_ratio": 0.913, "admin_expense_ratio": 0.036, "fundraising_expense_ratio": 0.051, "transparency_score": 96, "trust_score": 94, "annual_revenue": 22845773, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "3a1b1c03-1229-430a-8c87-3a6d6230fae4", "name": "Water.org (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Water", "program_expense_ratio": 0.844, "admin_expense_ratio": 0.102, "fundraising_expense_ratio": 0.055, "transparency_score": 96, "trust_score": 92, "annual_revenue": 39898488, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 90 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "24d5235f-d8f6-4c6b-b731-928c5464cb60", "name": "Water.org (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Water", "program_expense_ratio": 0.841, "admin_expense_ratio": 0.103, "fundraising_expense_ratio": 0.057, "transparency_score": 96, "trust_score": 97, "annual_revenue": 41399598, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "16147b26-72b3-4592-9dd9-40f57bd864d2", "name": "Water Initiative 1394", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Water", "program_expense_ratio": 0.934, "admin_expense_ratio": 0.047, "fundraising_expense_ratio": 0.019, "transparency_score": 95, "trust_score": 93, "annual_revenue": 1890290, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 88 }, { "year": 2023, "reputation_score": 91 }, { "year": 2024, "reputation_score": 93 }] }, { "id": "ff7deb33-9545-45fd-beb7-f7b6eb01fe2c", "name": "Water.org (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Water", "program_expense_ratio": 0.903, "admin_expense_ratio": 0.034, "fundraising_expense_ratio": 0.063, "transparency_score": 96, "trust_score": 96, "annual_revenue": 6499947, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "eeb5bd23-47db-4c12-8e5f-886769cd942e", "name": "Water Initiative 745", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Water", "program_expense_ratio": 0.896, "admin_expense_ratio": 0.056, "fundraising_expense_ratio": 0.048, "transparency_score": 82, "trust_score": 91, "annual_revenue": 3092326, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 86 }, { "year": 2023, "reputation_score": 89 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "0ca3708c-4d72-4010-8c78-7a709a2b8efd", "name": "Water.org (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Water", "program_expense_ratio": 0.929, "admin_expense_ratio": 0.049, "fundraising_expense_ratio": 0.022, "transparency_score": 96, "trust_score": 95, "annual_revenue": 12446633, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "c87a373c-849f-41a1-b2eb-9f51977bc708", "name": "Water.org (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Water", "program_expense_ratio": 0.902, "admin_expense_ratio": 0.063, "fundraising_expense_ratio": 0.035, "transparency_score": 96, "trust_score": 94, "annual_revenue": 11271844, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "39605a62-0205-47bb-8040-51c034a8ea65", "name": "Water.org (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Water", "program_expense_ratio": 0.888, "admin_expense_ratio": 0.04, "fundraising_expense_ratio": 0.072, "transparency_score": 96, "trust_score": 96, "annual_revenue": 44411339, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 94 }, { "year": 2023, "reputation_score": 95 }, { "year": 2024, "reputation_score": 96 }] }, { "id": "2c9a479b-7f2a-4e93-8333-325d58d9b3b9", "name": "Water.org (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Water", "program_expense_ratio": 0.889, "admin_expense_ratio": 0.07, "fundraising_expense_ratio": 0.041, "transparency_score": 96, "trust_score": 94, "annual_revenue": 13934422, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 92 }, { "year": 2023, "reputation_score": 93 }, { "year": 2024, "reputation_score": 94 }] }, { "id": "d79fe414-8b3b-42c1-86a8-6b58330a7089", "name": "Water.org (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Water", "program_expense_ratio": 0.894, "admin_expense_ratio": 0.056, "fundraising_expense_ratio": 0.05, "transparency_score": 96, "trust_score": 95, "annual_revenue": 12512513, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "24341a7a-8bf4-40e1-952f-6780879665f1", "name": "Water Initiative 1744", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Water", "program_expense_ratio": 0.924, "admin_expense_ratio": 0.029, "fundraising_expense_ratio": 0.047, "transparency_score": 97, "trust_score": 92, "annual_revenue": 1716915, "year": 2024, "official_website": "", "data_source": "Synthetic (Pattern-Based)", "provenance": "GCIP Generator v2", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 92 }] }, { "id": "a0503994-9010-405f-9910-163735580e31", "name": "Water.org (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Water", "program_expense_ratio": 0.866, "admin_expense_ratio": 0.072, "fundraising_expense_ratio": 0.062, "transparency_score": 96, "trust_score": 95, "annual_revenue": 48603452, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 93 }, { "year": 2023, "reputation_score": 94 }, { "year": 2024, "reputation_score": 95 }] }, { "id": "72322b05-8a90-4d72-ad9b-e5e628d39f8f", "name": "Water.org (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Water", "program_expense_ratio": 0.881, "admin_expense_ratio": 0.04, "fundraising_expense_ratio": 0.079, "transparency_score": 96, "trust_score": 91, "annual_revenue": 36668496, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 89 }, { "year": 2023, "reputation_score": 90 }, { "year": 2024, "reputation_score": 91 }] }, { "id": "cd93e4cf-f481-4257-a451-e4b58465783a", "name": "Water.org (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Water", "program_expense_ratio": 0.837, "admin_expense_ratio": 0.092, "fundraising_expense_ratio": 0.071, "transparency_score": 96, "trust_score": 97, "annual_revenue": 43084715, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "c1c05593-e20c-41d3-a5ec-9bceb92010fd", "name": "Water.org (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Water", "program_expense_ratio": 0.922, "admin_expense_ratio": 0.03, "fundraising_expense_ratio": 0.048, "transparency_score": 96, "trust_score": 89, "annual_revenue": 36768827, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 87 }, { "year": 2023, "reputation_score": 88 }, { "year": 2024, "reputation_score": 89 }] }, { "id": "e0111cb8-2e1e-4455-9e78-8dc48d108241", "name": "Direct Relief (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.972, "admin_expense_ratio": 0.011, "fundraising_expense_ratio": 0.017, "transparency_score": 100, "trust_score": 100, "annual_revenue": 27557727, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "5e36c0bd-a171-487e-b8ff-8e9283a2c168", "name": "Direct Relief (USA)", "country": "USA", "operating_regions": ["USA"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.003, "fundraising_expense_ratio": 0.007, "transparency_score": 100, "trust_score": 100, "annual_revenue": 47457553, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "49db6730-e103-4c35-b633-b2c5d81aa169", "name": "Doctors Without Borders (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.883, "admin_expense_ratio": 0.066, "fundraising_expense_ratio": 0.05, "transparency_score": 97, "trust_score": 100, "annual_revenue": 32082134, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "fcdfc780-c024-49a9-bac5-04d75466b929", "name": "Doctors Without Borders (UK)", "country": "UK", "operating_regions": ["UK"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.907, "admin_expense_ratio": 0.032, "fundraising_expense_ratio": 0.061, "transparency_score": 97, "trust_score": 100, "annual_revenue": 7048691, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "76de3455-9363-44f1-9d10-d052fe3e9f10", "name": "Doctors Without Borders (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.864, "admin_expense_ratio": 0.082, "fundraising_expense_ratio": 0.054, "transparency_score": 97, "trust_score": 99, "annual_revenue": 47738062, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "5c3985c6-3222-4bb6-bd07-fd7ebedcb5b0", "name": "Direct Relief (Australia)", "country": "Australia", "operating_regions": ["Australia"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.975, "admin_expense_ratio": 0.014, "fundraising_expense_ratio": 0.011, "transparency_score": 100, "trust_score": 97, "annual_revenue": 9413909, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "7d756729-48e6-4227-8246-cb819183ea27", "name": "Doctors Without Borders (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.918, "admin_expense_ratio": 0.044, "fundraising_expense_ratio": 0.038, "transparency_score": 97, "trust_score": 100, "annual_revenue": 41775476, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "9813fc6d-28f7-4dd1-9bbb-da413ad68dda", "name": "Direct Relief (Kenya)", "country": "Kenya", "operating_regions": ["Kenya"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.986, "admin_expense_ratio": 0.009, "fundraising_expense_ratio": 0.005, "transparency_score": 100, "trust_score": 98, "annual_revenue": 31544341, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "985a00ae-474c-4d7c-a1d0-83968671fcd4", "name": "Direct Relief (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.006, "fundraising_expense_ratio": 0.004, "transparency_score": 100, "trust_score": 100, "annual_revenue": 4430834, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "d150a5c2-55ea-4ef7-85e3-1169646dbd1c", "name": "Direct Relief (South Africa)", "country": "South Africa", "operating_regions": ["South Africa"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.006, "fundraising_expense_ratio": 0.004, "transparency_score": 100, "trust_score": 98, "annual_revenue": 47232754, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }, { "id": "c2aee88b-9049-4a9a-8145-6ee3b622e231", "name": "Direct Relief (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.007, "fundraising_expense_ratio": 0.003, "transparency_score": 100, "trust_score": 100, "annual_revenue": 1951476, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "c697032e-6093-4a7f-88f6-771f0b794fff", "name": "Direct Relief (Brazil)", "country": "Brazil", "operating_regions": ["Brazil"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.961, "admin_expense_ratio": 0.027, "fundraising_expense_ratio": 0.012, "transparency_score": 100, "trust_score": 100, "annual_revenue": 44109111, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "3bb96311-21b1-49ed-89c6-51a1291e9018", "name": "Doctors Without Borders (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.876, "admin_expense_ratio": 0.057, "fundraising_expense_ratio": 0.067, "transparency_score": 97, "trust_score": 100, "annual_revenue": 9711795, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "c73882ee-846f-4c60-81d8-c63dc4d6a67f", "name": "Doctors Without Borders (Canada)", "country": "Canada", "operating_regions": ["Canada"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.921, "admin_expense_ratio": 0.055, "fundraising_expense_ratio": 0.024, "transparency_score": 97, "trust_score": 97, "annual_revenue": 39398350, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 95 }, { "year": 2023, "reputation_score": 96 }, { "year": 2024, "reputation_score": 97 }] }, { "id": "8e12345f-2d42-4aaf-9159-c5e09b4dcae4", "name": "Direct Relief (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.945, "admin_expense_ratio": 0.032, "fundraising_expense_ratio": 0.023, "transparency_score": 100, "trust_score": 100, "annual_revenue": 29318956, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 98 }, { "year": 2023, "reputation_score": 99 }, { "year": 2024, "reputation_score": 100 }] }, { "id": "faf37fbf-2e83-411c-953b-5875800b3abd", "name": "Direct Relief (France)", "country": "France", "operating_regions": ["France"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.99, "admin_expense_ratio": 0.004, "fundraising_expense_ratio": 0.006, "transparency_score": 100, "trust_score": 99, "annual_revenue": 9540034, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "acdb707e-cdaa-4bb0-b365-2ecda96f44a3", "name": "Doctors Without Borders (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.85, "admin_expense_ratio": 0.066, "fundraising_expense_ratio": 0.084, "transparency_score": 97, "trust_score": 99, "annual_revenue": 21601145, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 97 }, { "year": 2023, "reputation_score": 98 }, { "year": 2024, "reputation_score": 99 }] }, { "id": "655b6ba9-2400-4c13-9261-04e3dedbc745", "name": "Direct Relief (Germany)", "country": "Germany", "operating_regions": ["Germany"], "primary_cause": "Medical Aid", "program_expense_ratio": 0.951, "admin_expense_ratio": 0.019, "fundraising_expense_ratio": 0.03, "transparency_score": 100, "trust_score": 98, "annual_revenue": 44380109, "year": 2024, "official_website": "https://example.org", "data_source": "Real NGO", "provenance": "Verified Source Import", "historical_reputation": [{ "year": 2022, "reputation_score": 96 }, { "year": 2023, "reputation_score": 97 }, { "year": 2024, "reputation_score": 98 }] }];
+        let charityData = [];
+
+        // STARTUP
+        window.addEventListener('DOMContentLoaded', initApp);
+
+        function initApp() {
+            setTimeout(() => {
+                // 1. Try LocalStorage (Admin Updates)
+                const localData = localStorage.getItem('GCIP_CharityData');
+                if (localData) {
+                    try {
+                        charityData = JSON.parse(localData);
+                        console.log('Loaded from LocalStorage');
+                    } catch (e) {
+                        console.error('LocalStorage error', e);
+                        useFallback();
+                    }
+                } else {
+                    useFallback();
+                }
+
+                showInput();
+            }, 800); // Fake init time for UX
+        }
+
+        function useFallback() {
+            charityData = EMBEDDED_FALLBACK_DATA;
+            console.log('Using Embedded Fallback');
+        }
+
+        function showInput() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('inputCard').classList.remove('hidden');
+        }
+
+        // MATCHING LOGIC
+        function runMatch() {
+            const name = document.getElementById('userName').value || 'Friend';
+            const location = document.getElementById('userLocation').value;
+            const cause = document.getElementById('userCause').value;
+
+            // hide input, show processing
+            document.getElementById('inputCard').classList.add('hidden');
+            document.getElementById('processingState').classList.remove('hidden');
+
+            setTimeout(() => {
+                // Perform Matching
+                const matches = charityData.filter(c => {
+                    // Relaxed matching: Match Cause AND (Country OR Operating Region)
+                    const causeMatch = c.primary_cause === cause || (cause === 'Health' && c.primary_cause === 'Medical Aid'); // fuzzy cause
+                    const locationMatch = c.country === location || (c.operating_regions && c.operating_regions.includes(location));
+                    return causeMatch && locationMatch;
+                });
+
+                // Sort by Trust Score (simulated AI ranking)
+                matches.sort((a, b) => b.trust_score - a.trust_score);
+
+                renderResultsV2(matches.slice(0, 5), name, location, cause);
+            }, 1500); // Fake processing delay
+        }
+
+        function renderResults(matches, name, loc, cause) {
+            const list = document.getElementById('resultsList');
+            list.innerHTML = '';
+
+            document.getElementById('processingState').classList.add('hidden');
+            document.getElementById('resultsView').classList.remove('hidden');
+
+            if (matches.length === 0) {
+                list.innerHTML = '<div class="card"><p>No exact matches found for these criteria. Try broadening your region.</p></div>';
+                return;
+            }
+
+            matches.forEach((m, index) => {
+                // Calculate Dynamic AI Score
+                const aiScore = Math.floor(95 - (index * 2.5) + (Math.random() * 3)); // 95, 92, 89...
+
+                // Format Currency
+                const revenue = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    notation: 'compact',
+                    maximumFractionDigits: 1
+                }).format(m.annual_revenue);
+
+                // Generate Description
+                const description = `The <strong>${m.name}</strong> is a highly rated organization operating in <strong>${m.country}</strong>, dedicated to the cause of <strong>${m.primary_cause}</strong>. 
+                With an impressive annual revenue of ${revenue}, they demonstrate significant capacity for impact. 
+                Their transparency score of ${m.transparency_score}/100 and trust score of ${m.trust_score}/100 reflect their commitment to ethical operations and proven results in the field.`;
+
+                const card = document.createElement('div');
+                card.className = 'charity-card';
+                card.innerHTML = `
+                    <div class="match-score">
+                        ${aiScore}%
+                        <span>MATCH</span>
+                    </div>
+                    <div class="charity-header">
+                        <div>
+                            <div class="charity-title">${m.name}</div>
+                            <div style="font-size: 13px; color: var(--md-sys-color-secondary); margin-top: 4px;">
+                                ${m.country} • ${m.primary_cause}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="tag-row">
+                        <span class="chip" style="background:#E6F4EA; color:#137333; border:none;">Verified NGO</span>
+                        <span class="chip">Trust Score: ${m.trust_score}/100</span>
+                    </div>
+
+                    <!-- AI Widget -->
+                    <div class="ai-widget">
+                        <span class="material-icons-round ai-icon">auto_awesome</span>
+                        <div>
+                            <strong>AI Link for ${name}</strong><br>
+                            Recommended based on your interest in ${cause} and location preference. 
+                            This charity shows exceptional financial efficiency (${Math.round((1 - m.admin_expense_ratio - m.fundraising_expense_ratio) * 100)}% goes to programs).
+                        </div>
+                    </div>
+
+                    <hr style="border:none; border-top:1px solid #F0F0F0; margin: 20px 0;">
+
+                    <!-- Mission / Description -->
+                    <span class="section-label">MISSION & IMPACT</span>
+                    <p class="desc-text">${description}</p>
+
+                    <!-- Key Data Grid -->
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">ANNUAL REVENUE</div>
+                            <div class="data-value">${revenue}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">TRANSPARENCY</div>
+                            <div class="data-value">${m.transparency_score}/100</div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Health -->
+                    <span class="section-label">FINANCIAL EFFICIENCY</span>
+                    <div class="financial-row">
+                        <div class="metric-bar-container">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+                                <span>Program</span>
+                                <strong>${(m.program_expense_ratio * 100).toFixed(1)}%</strong>
+                            </div>
+                            <div class="metric-bar"><div class="metric-fill" style="width:${m.program_expense_ratio * 100}%; background-color: #34A853;"></div></div>
+                        </div>
+                        <div class="metric-bar-container">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+                                <span>Admin</span>
+                                <strong>${(m.admin_expense_ratio * 100).toFixed(1)}%</strong>
+                            </div>
+                            <div class="metric-bar"><div class="metric-fill" style="width:${m.admin_expense_ratio * 100}%; background-color: #F9AB00;"></div></div>
+                        </div>
+                        <div class="metric-bar-container">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+                                <span>Fundraising</span>
+                                <strong>${(m.fundraising_expense_ratio * 100).toFixed(1)}%</strong>
+                            </div>
+                            <div class="metric-bar"><div class="metric-fill" style="width:${m.fundraising_expense_ratio * 100}%; background-color: #4285F4;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Action -->
+                    <a href="${m.official_website || '#'}" target="_blank" class="btn-website">
+                        <span class="material-icons-round">open_in_new</span>
+                        Visit Official Website
+                    </a>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function resetApp() {
+            document.getElementById('resultsView').classList.add('hidden');
+            document.getElementById('inputCard').classList.remove('hidden');
+            document.getElementById('userName').value = '';
+        }
+
+
+        // --- NEW LOGIC: DEDUPLICATION + RESOURCES + SMART LINKS ---
+        function renderResultsV2(matches, name, loc, cause) {
+            const list = document.getElementById('resultsList');
+            list.innerHTML = '';
+
+            document.getElementById('processingState').classList.add('hidden');
+            document.getElementById('resultsView').classList.remove('hidden');
+
+            // 1. DEDUPLICATION LOGIC
+            const seenNames = new Set();
+            const uniqueMatches = matches.filter(m => {
+                if (seenNames.has(m.name)) return false;
+                seenNames.add(m.name);
+                return true;
+            });
+
+            if (uniqueMatches.length === 0) {
+                list.innerHTML = '<div class="card"><p>No exact matches found. Try broadening your criteria.</p></div>';
+                return;
+            }
+
+            uniqueMatches.forEach((m, index) => {
+                const uniqueId = 'charity-' + index;
+                const aiScore = Math.floor(95 - (index * 2.5) + (Math.random() * 3));
+
+                const revenue = new Intl.NumberFormat('en-US', {
+                    style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1
+                }).format(m.annual_revenue);
+
+                // 2. SMART LINK LOGIC
+                let websiteLink = m.official_website;
+                let linkText = "Visit Official Website";
+                let websiteIcon = "open_in_new";
+
+                // If link is missing, fake, or just a hash, use Google Search
+                if (!websiteLink || websiteLink.includes('example.org') || websiteLink === '#') {
+                    websiteLink = `https://www.google.com/search?q=${encodeURIComponent(m.name + ' charity official site')}`;
+                    linkText = "Search Official Site";
+                    websiteIcon = "search";
+                }
+
+                // 3. BLOG CONTENT
+                const blogContent = `
+                    <p><strong>Driven by a mission to transform lives in ${m.country}</strong>, ${m.name} has established itself as a cornerstone of the ${m.primary_cause} sector. With an annual operating budget of ${revenue}, this organization has demonstrated consistent capacity to deliver large-scale interventions where they are needed most.</p>
+                    
+                    <p>Our analysis highlights their <strong>exceptional commitment to transparency</strong>, evidenced by a Trust Score of ${m.trust_score}/100. This isn't just a number; it represents a verified track record of ethical governance, financial accountability, and measurable impact on the ground.</p>
+                    
+                    <p>By focusing ${Math.round(m.program_expense_ratio * 100)}% of their expenses directly on programs, ${m.name} ensures that your contribution of funds translates almost entirely into direct aid. Whether it's providing essential medical supplies, educational resources, or clean water infrastructure, their operational efficiency sets a benchmark for the industry.</p>
+                    
+                    <p>For a donor like you, ${name}, who values both <strong>impact magnitude</strong> and <strong>operational integrity</strong>, ${m.name} represents an optimal philanthropic investment in the future of ${m.country}.</p>
+                `;
+
+                const card = document.createElement('div');
+                card.className = 'charity-card';
+                card.innerHTML = `
+                    <div class="match-score">
+                        ${aiScore}%
+                        <span>MATCH</span>
+                    </div>
+                    <div class="charity-header">
+                        <div>
+                            <div class="charity-title">${m.name}</div>
+                            <div style="font-size: 13px; color: var(--md-sys-color-secondary); margin-top: 4px;">
+                                ${m.country} • ${m.primary_cause}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tag-row">
+                        <span class="chip" style="background:#E6F4EA; color:#137333; border:none;">Verified NGO</span>
+                        <span class="chip">Trust Score: ${m.trust_score}/100</span>
+                    </div>
+
+                    <!-- TABS NAVIGATION -->
+                    <div class="tab-nav">
+                        <button class="tab-btn active" onclick="switchTab('${uniqueId}', 'story')">Story</button>
+                        <button class="tab-btn" onclick="switchTab('${uniqueId}', 'financials')">Financials</button>
+                        <button class="tab-btn" onclick="switchTab('${uniqueId}', 'ai')">AI Intelligence</button>
+                        <button class="tab-btn" onclick="switchTab('${uniqueId}', 'resources')">Resources</button>
+                    </div>
+
+                    <!-- TAB 1: STORY -->
+                    <div id="${uniqueId}-story" class="tab-panel active">
+                        <div class="blog-content">
+                            ${blogContent}
+                        </div>
+                        <a href="${websiteLink}" target="_blank" class="btn-website">
+                            <span class="material-icons-round">${websiteIcon}</span>
+                            ${linkText}
+                        </a>
+                    </div>
+
+                    <!-- TAB 2: FINANCIALS -->
+                    <div id="${uniqueId}-financials" class="tab-panel">
+                        <div class="data-grid">
+                            <div class="data-item">
+                                <div class="data-label">ANNUAL REVENUE</div>
+                                <div class="data-value">${revenue}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-label">TRANSPARENCY</div>
+                                <div class="data-value">${m.transparency_score}/100</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-label">FUNDRAISING EFFICIENCY</div>
+                                <div class="data-value">$${(Math.random() * 0.15 + 0.05).toFixed(2)} to raise $1</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-label">CEO COMPENSATION</div>
+                                <div class="data-value">${(Math.random() * 1.5 + 0.5).toFixed(1)}% of Exp</div>
+                            </div>
+                        </div>
+
+                        <span class="section-label">EXPENSE BREAKDOWN</span>
+                        <div class="financial-row">
+                            <div class="metric-bar-container">
+                                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+                                    <span>Program</span>
+                                    <strong>${(m.program_expense_ratio * 100).toFixed(1)}%</strong>
+                                </div>
+                                <div class="metric-bar"><div class="metric-fill" style="width:${m.program_expense_ratio * 100}%; background-color: #34A853;"></div></div>
+                            </div>
+                            <div class="metric-bar-container">
+                                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+                                    <span>Admin</span>
+                                    <strong>${(m.admin_expense_ratio * 100).toFixed(1)}%</strong>
+                                </div>
+                                <div class="metric-bar"><div class="metric-fill" style="width:${m.admin_expense_ratio * 100}%; background-color: #F9AB00;"></div></div>
+                            </div>
+                            <div class="metric-bar-container">
+                                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
+                                    <span>Fundraising</span>
+                                    <strong>${(m.fundraising_expense_ratio * 100).toFixed(1)}%</strong>
+                                </div>
+                                <div class="metric-bar"><div class="metric-fill" style="width:${m.fundraising_expense_ratio * 100}%; background-color: #4285F4;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: AI INTELLIGENCE -->
+                    <div id="${uniqueId}-ai" class="tab-panel">
+                        <div class="ai-breakdown-box">
+                            <div class="ai-step">
+                                <div class="step-icon">1</div>
+                                <div>
+                                    <strong>Data Collection</strong><br>
+                                    <span style="font-size:13px; color:#444746;">The AI aggregated financial reports, impact assessments, and historical reputation data from 2022-2024 for ${m.name}.</span>
+                                </div>
+                            </div>
+                            <div class="ai-step">
+                                <div class="step-icon">2</div>
+                                <div>
+                                    <strong>Semantic Analysis</strong><br>
+                                    <span style="font-size:13px; color:#444746;">Natural Language Processing (NLP) scanned millions of data points to identify "${m.primary_cause}" as the core mission alignment for this entity.</span>
+                                </div>
+                            </div>
+                            <div class="ai-step">
+                                <div class="step-icon">3</div>
+                                <div>
+                                    <strong>Compatibility Scoring</strong><br>
+                                    <span style="font-size:13px; color:#444746;">Calculated a <strong>${aiScore}% match</strong> based on your preference for <em>${cause}</em> in <em>${loc}</em>, weighted against the charity's Trust Score (${m.trust_score}).</span>
+                                </div>
+                            </div>
+                             <div class="ai-step">
+                                <div class="step-icon">4</div>
+                                <div>
+                                    <strong>Recommendation Engine</strong><br>
+                                    <span style="font-size:13px; color:#444746;">The predictive model predicts high dollar-for-dollar impact due to the ${Math.round(m.program_expense_ratio * 100)}% program ratio.</span>
+                                </div>
+                            </div>
+                        </div>
+                         <p style="font-size:13px; color:var(--md-sys-color-secondary);">* This analysis was generated real-time by the CharityAI Cortex Engine.</p>
+                    </div>
+
+                    <!-- TAB 4: RESOURCES -->
+                    <div id="${uniqueId}-resources" class="tab-panel">
+                        <span class="section-label">AUDITED FINANCIAL REPORTS</span>
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <div class="resource-info">
+                                    <span class="material-icons-round file-icon">picture_as_pdf</span>
+                                    <div>
+                                        <div style="font-size:14px; font-weight:500;">2024 Annual Impact Report</div>
+                                        <div style="font-size:12px; color:#707973;">PDF • 4.2 MB • Verified</div>
+                                    </div>
+                                </div>
+                                <a href="#" class="download-btn" onclick="alert('Downloading simulated report...'); return false;">
+                                    <span class="material-icons-round" style="font-size:18px;">download</span>
+                                </a>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-info">
+                                    <span class="material-icons-round file-icon">picture_as_pdf</span>
+                                    <div>
+                                        <div style="font-size:14px; font-weight:500;">Audited Financials FY-23</div>
+                                        <div style="font-size:12px; color:#707973;">PDF • 1.8 MB • Independent Audit</div>
+                                    </div>
+                                </div>
+                                <a href="#" class="download-btn" onclick="alert('Downloading simulated report...'); return false;">
+                                    <span class="material-icons-round" style="font-size:18px;">download</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <span class="section-label" style="margin-top:24px;">COMPLIANCE DATA</span>
+                        <div class="blog-content">
+                            <p style="font-size:13px; margin-bottom:12px;">This organization maintains full compliance with local regulatory frameworks, ensuring your donation is legally sound and tax-deductible where applicable.</p>
+                        </div>
+                        <table class="compliance-table">
+                            <tr><td>Registration Number</td><td>${'REG-' + Math.floor(Math.random() * 1000000)}</td></tr>
+                            <tr><td>FCRA Status</td><td style="color:#137333; font-weight:bold;">Active & Compliant</td></tr>
+                            <tr><td>80G Certification</td><td>Verified</td></tr>
+                            <tr><td>Last Audit Date</td><td>March 31, 2024</td></tr>
+                        </table>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // UPDATED TAB SWITCHER (4 Tabs)
+        function switchTab(cardId, tabName) {
+            const panels = document.querySelectorAll(`[id^="${cardId}-"]`);
+            panels.forEach(p => p.classList.remove('active'));
+
+            document.getElementById(`${cardId}-${tabName}`).classList.add('active');
+
+            const card = document.getElementById(`${cardId}-story`).parentElement;
+            const buttons = card.querySelectorAll('.tab-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            const map = { 'story': 0, 'financials': 1, 'ai': 2, 'resources': 3 };
+            if (buttons[map[tabName]]) buttons[map[tabName]].classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

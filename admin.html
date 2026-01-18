@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Charity Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            /* Pixel UI / Material 3 Colors */
+            --md-sys-color-primary: #005AC1;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #D8E2FF;
+            --md-sys-color-on-primary-container: #001A41;
+            --md-sys-color-secondary: #575E71;
+            --md-sys-color-secondary-container: #DBE2F9;
+            --md-sys-color-background: #FEFBFF;
+            --md-sys-color-surface: #FEFBFF;
+            --md-sys-color-surface-variant: #E1E2EC;
+            --md-sys-color-on-surface: #1B1B1F;
+            --md-sys-color-outline: #747775;
+            --md-sys-color-error: #BA1A1A;
+
+            --border-radius-lg: 28px;
+            --border-radius-md: 12px;
+            --border-radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+        }
+
+        .card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--border-radius-lg);
+            padding: 32px;
+            box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0;
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--md-sys-color-secondary);
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+        input[type="password"] {
+            padding: 16px;
+            border-radius: 4px;
+            border: 1px solid var(--md-sys-color-outline);
+            background-color: var(--md-sys-color-surface);
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="password"]:focus {
+            border-color: var(--md-sys-color-primary);
+            border-width: 2px;
+            padding: 15px;
+            /* Adjust for border width change */
+        }
+
+        .btn {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: box-shadow 0.2s, background-color 0.2s;
+        }
+
+        .btn:hover {
+            box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+            background-color: #004595;
+            /* Slightly darker */
+        }
+
+        .btn-outlined {
+            background-color: transparent;
+            border: 1px solid var(--md-sys-color-outline);
+            color: var(--md-sys-color-primary);
+        }
+
+        .btn-delete {
+            background-color: var(--md-sys-color-error);
+            color: #fff;
+        }
+
+        .status-message {
+            padding: 12px;
+            border-radius: var(--border-radius-md);
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-surface);
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Admin Dashboard Styles */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 16px;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .tool-card {
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--border-radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .tool-card:hover {
+            background-color: var(--md-sys-color-surface-variant);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .material-icons-round {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login View -->
+    <div class="container" id="loginView">
+        <div class="card">
+            <h1><span class="material-icons-round">admin_panel_settings</span> Admin Portal</h1>
+            <p style="color: var(--md-sys-color-secondary); font-size: 14px;">
+                Sign in to manage the Global Charity Intelligence Platform database.
+            </p>
+
+            <div class="input-group">
+                <label>PASSWORD</label>
+                <input type="password" id="passwordInput" placeholder="Enter admin code">
+            </div>
+
+            <button class="btn" onclick="attemptLogin()">
+                Access Dashboard
+                <span class="material-icons-round">arrow_forward</span>
+            </button>
+            <div id="loginMessage" class="status-message"></div>
+
+            <button class="btn btn-outlined" onclick="window.location.href='index.html'">
+                Return to Site
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div class="container hidden" id="dashboardView" style="max-width: 800px;">
+        <div class="card">
+            <div class="dashboard-header">
+                <h1><span class="material-icons-round">dashboard</span> Admin Dashboard</h1>
+                <button class="btn btn-outlined" onclick="logout()" style="width: auto;">
+                    Logout
+                </button>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value" id="charityCount">0</div>
+                <div class="stat-label">Total Charities in Database</div>
+            </div>
+
+            <div style="font-size: 14px; color: var(--md-sys-color-secondary);">
+                <strong>System Status:</strong> <span id="dbSource">Checking...</span>
+            </div>
+
+            <div class="tool-grid">
+                <!-- Update Tool -->
+                <div class="tool-card" onclick="document.getElementById('fileUpload').click()">
+                    <span class="material-icons-round"
+                        style="font-size: 32px; color: var(--md-sys-color-primary);">upload_file</span>
+                    <div>
+                        <strong>Update Data</strong><br>
+                        <span style="font-size: 12px; color: var(--md-sys-color-secondary);">Upload new JSON file</span>
+                    </div>
+                </div>
+                <input type="file" id="fileUpload" accept=".json" style="display:none"
+                    onchange="handleFileUpload(this)">
+
+                <!-- Reset Tool -->
+                <div class="tool-card" onclick="resetDatabase()">
+                    <span class="material-icons-round"
+                        style="font-size: 32px; color: var(--md-sys-color-error);">restore</span>
+                    <div>
+                        <strong>Reset Database</strong><br>
+                        <span style="font-size: 12px; color: var(--md-sys-color-secondary);">Clear local
+                            overrides</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="actionMessage" class="status-message" style="margin-top: 10px;"></div>
+
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASS = "123123";
+
+        // Login Logic
+        function attemptLogin() {
+            const input = document.getElementById('passwordInput').value;
+            const msg = document.getElementById('loginMessage');
+
+            if (input === ADMIN_PASS) {
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('dashboardView').classList.remove('hidden');
+                initDashboard();
+            } else {
+                msg.style.display = 'flex';
+                msg.style.backgroundColor = '#FFDAD6'; // Error container
+                msg.style.color = '#410002';
+                msg.innerHTML = '<span class="material-icons-round">error</span> Incorrect Password';
+            }
+        }
+
+        document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') attemptLogin();
+        });
+
+        function logout() {
+            location.reload();
+        }
+
+        // Dashboard Logic
+        function initDashboard() {
+            checkDatabaseStatus();
+        }
+
+        function checkDatabaseStatus() {
+            const localData = localStorage.getItem('GCIP_CharityData');
+            const countDisplay = document.getElementById('charityCount');
+            const sourceDisplay = document.getElementById('dbSource');
+
+            if (localData) {
+                const data = JSON.parse(localData);
+                countDisplay.innerText = data.length;
+                sourceDisplay.innerText = "Running on Admin Uploaded Data (LocalStorage)";
+                sourceDisplay.style.color = "var(--md-sys-color-primary)";
+            } else {
+                // Try to guess fetch
+                countDisplay.innerText = "Default";
+                sourceDisplay.innerText = "Running on Default Embedded System";
+            }
+        }
+
+        function showActionMessage(text, isError = false) {
+            const msg = document.getElementById('actionMessage');
+            msg.style.display = 'flex';
+            msg.innerHTML = '<span class="material-icons-round">' + (isError ? 'error' : 'check_circle') + '</span> ' + text;
+            msg.style.backgroundColor = isError ? '#FFDAD6' : '#E8DEF8';
+            msg.style.color = isError ? '#410002' : '#1D192B';
+        }
+
+        // File Handler
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    if (!Array.isArray(json)) throw new Error("JSON must be an array");
+
+                    // Save to LocalStorage
+                    localStorage.setItem('GCIP_CharityData', JSON.stringify(json));
+
+                    checkDatabaseStatus();
+                    showActionMessage(`Successfully updated database with ${json.length} records.`);
+                } catch (err) {
+                    showActionMessage("Invalid JSON File: " + err.message, true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetDatabase() {
+            if (confirm("Are you sure? This will revert the website to use the built-in default dataset.")) {
+                localStorage.removeItem('GCIP_CharityData');
+                checkDatabaseStatus();
+                showActionMessage("Database reset to defaults.");
+            }
+        }
+
+    </script>
+</body>
+
+</html>
