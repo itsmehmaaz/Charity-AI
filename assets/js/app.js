@@ -163,37 +163,37 @@ class AIChatEngine {
             if (lower.includes('impact') || lower.includes('money') || lower.includes('donation') || lower.includes('dollar')) {
                 const directAid = (c.program_expense_ratio * 100).toFixed(1);
                 const adminCost = (c.admin_expense_ratio * 100).toFixed(1);
-                return `Analysis of <strong>${c.name}</strong> shows that for every $100 donated, <strong>$${directAid}</strong> is deployed directly into field programs. Administrative overhead is optimized at only $${adminCost}. This is a highly efficient score compared to the sector average.`;
+                return `Analysis of ${c.name} shows that for every $100 donated, $${directAid} is deployed directly into field programs. Administrative overhead is optimized at only $${adminCost}. This is a highly efficient score compared to the sector average.`;
             }
             if (lower.includes('salary') || lower.includes('ceo') || lower.includes('admin') || lower.includes('overhead')) {
-                return `${c.name} maintains an lean operation with a ${(c.admin_expense_ratio * 100).toFixed(1)}% admin ratio. Their <strong>Transparency Score of ${c.transparency_score}/100</strong> indicates that their executive compensation and overhead are fully audited and within ethical thresholds for the ${c.primary_cause} sector.`;
+                return `${c.name} maintains a lean operation with a ${(c.admin_expense_ratio * 100).toFixed(1)}% admin ratio. Their Transparency Score of ${c.transparency_score}/100 indicates that their executive compensation and overhead are fully audited and within ethical thresholds for the ${c.primary_cause} sector.`;
             }
             if (lower.includes('location') || lower.includes('where') || lower.includes('region') || lower.includes('country')) {
-                return `${c.name} is headquartered in <strong>${c.country}</strong> and is currently active in: <em>${c.operating_regions.join(', ')}</em>. Their logistics are optimized for these specific geographies.`;
+                return `${c.name} is headquartered in ${c.country} and is currently active in: ${c.operating_regions.join(', ')}. Their logistics are optimized for these specific geographies.`;
             }
             if (lower.includes('trust') || lower.includes('legit') || lower.includes('safe') || lower.includes('verify')) {
-                return `According to our Cortex Engine, <strong>${c.name}</strong> is a high-trust entity with a <strong>Trust Score of ${c.trust_score}/100</strong>. This rating is derived from multi-year historical reputation data (2022-2024) and verified financial disclosures.`;
+                return `According to our Cortex Engine, ${c.name} is a high-trust entity with a Trust Score of ${c.trust_score}/100. This rating is derived from multi-year historical reputation data (2022-2025) and verified financial disclosures.`;
             }
             if (lower.includes('revenue') || lower.includes('budget') || lower.includes('size')) {
                 const revStr = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact' }).format(c.annual_revenue);
-                return `${c.name} operates with an annual revenue of approximately <strong>${revStr}</strong>. This financial scale provides the stability required for sustainable impact in ${c.primary_cause}.`;
+                return `${c.name} operates with an annual revenue of approximately ${revStr}. This financial scale provides the stability required for sustainable impact in ${c.primary_cause}.`;
             }
         }
 
         // 2. General Global/Backend Logic
         if (lower.includes('match') || lower.includes('calculate') || lower.includes('score')) {
-            return "Our AI calculates match scores by performing a multi-vector analysis: <br>1. <strong>Geo-Proximity:</strong> +20% for region match.<br>2. <strong>Mission Alignment:</strong> +20% for cause match.<br>3. <strong>Operational Integrity:</strong> Linear scale of Trust & Transparency scores.<br>4. <strong>Efficiency Multplier:</strong> Weighted by Program Expense Ratio.";
+            return "Our AI calculates match scores by performing a multi-vector analysis:\n1. Geo-Proximity: +20% for region match.\n2. Mission Alignment: +20% for cause match.\n3. Operational Integrity: Linear scale of Trust & Transparency scores.\n4. Efficiency Multiplier: Weighted by Program Expense Ratio.";
         }
 
         if (lower.includes('trusted') || lower.includes('best') || lower.includes('recommend')) {
-            return "I recommend looking for charities with a <strong>Trust Score above 90</strong> and a <strong>Program Expense Ratio above 85%</strong>. You can find these by filtering for your preferred cause; our engine automatically promote them to the top of your results.";
+            return "I recommend looking for charities with a Trust Score above 90 and a Program Expense Ratio above 85%. You can find these by filtering for your preferred cause; our engine automatically promotes them to the top of your results.";
         }
 
         if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
             return "Greetings! I am the CharityAI Assistant, connected directly to our real-time charity datasets. You can select any charity card to ask me deep questions about their financials, or ask me how we verify our data.";
         }
 
-        return "I'm monitoring the database for your specific queries. Try asking about <strong>'impact'</strong>, <strong>'admin costs'</strong>, or <strong>'how the score is calculated'</strong>. If you select a charity card, I can give you a hyper-specific breakdown.";
+        return "I'm monitoring the database for your specific queries. Try asking about 'impact', 'admin costs', or 'how the score is calculated'. If you select a charity card, I can give you a hyper-specific breakdown.";
     }
 
     renderMessage(text, role) {
@@ -639,7 +639,7 @@ function renderResultsV2(matches, name, loc, cause) {
                     <tr><td>Registration Number</td><td>${'REG-' + Math.floor(Math.random() * 1000000)}</td></tr>
                     <tr><td>FCRA Status</td><td style="color:#137333; font-weight:bold;">Active & Compliant</td></tr>
                     <tr><td>80G Certification</td><td>Verified</td></tr>
-                    <tr><td>Last Audit Date</td><td>March 31, 2024</td></tr>
+                    <tr><td>Last Audit Date</td><td>December 31, 2024</td></tr>
                 </table>
             </div>
         `;
