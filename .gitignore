@@ -1,0 +1,20 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary / Local data
+*.log
+localStorage_data.json
+temp/
+
+# Node (in case they use it later)
+node_modules/
+dist/
+build/
