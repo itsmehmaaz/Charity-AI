@@ -40,6 +40,92 @@ function showInput() {
     document.getElementById('inputCard').classList.remove('hidden');
 }
 
+// --- AI DONOR DNA CORE ---
+const DNA_QUESTIONS = [
+    {
+        id: 'priority',
+        text: "When crisis strikes, what is your primary concern?",
+        options: [
+            { text: "Immediate Speed of Aid", value: "speed", persona: "Emergency Responder" },
+            { text: "Long-term Systemic Change", value: "systemic", persona: "Strategic Philanthropist" },
+            { text: "Scalability of Infrastructure", value: "scaling", persona: "Venture Benefactor" }
+        ]
+    },
+    {
+        id: 'impact',
+        text: "How do you define success for a donation?",
+        options: [
+            { text: "Lives directly saved today", value: "direct", persona: "Humanitarian Guardian" },
+            { text: "Policy or structural shifts", value: "policy", persona: "Social Architect" },
+            { text: "Community independence", value: "independence", persona: "Empowerment Catalyst" }
+        ]
+    },
+    {
+        id: 'transparency',
+        text: "Which trust factor matters most to you?",
+        options: [
+            { text: "Low overhead/admin costs", value: "lean", persona: "Efficiency Expert" },
+            { text: "Detailed third-party audits", value: "audits", persona: "Integrity Seeker" },
+            { text: "Real-time field reporting", value: "visibility", persona: "Direct Witness" }
+        ]
+    }
+];
+
+let currentDNAStep = 0;
+let userDNAAnswers = [];
+let isAdvancedMode = false;
+
+function toggleAdvancedMode() {
+    isAdvancedMode = true;
+    document.getElementById('inputCard').classList.add('hidden');
+    document.getElementById('aiDNAProfile').classList.remove('hidden');
+    renderDNAQuestion();
+}
+
+function renderDNAQuestion() {
+    const container = document.getElementById('dnaQuestionContainer');
+    const q = DNA_QUESTIONS[currentDNAStep];
+    const progress = ((currentDNAStep + 1) / DNA_QUESTIONS.length) * 100;
+
+    container.innerHTML = `
+        <div class="dna-question active">
+            <p class="question-text">${q.text}</p>
+            <div class="option-list">
+                ${q.options.map(opt => `
+                    <button class="option-btn" onclick="selectDNAOption('${opt.value}')">
+                        ${opt.text}
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    document.getElementById('dnaProgressBar').style.width = `${progress}%`;
+}
+
+function selectDNAOption(val) {
+    const q = DNA_QUESTIONS[currentDNAStep];
+    const option = q.options.find(o => o.value === val);
+    userDNAAnswers.push(option);
+
+    if (currentDNAStep < DNA_QUESTIONS.length - 1) {
+        currentDNAStep++;
+        renderDNAQuestion();
+    } else {
+        completeDNAProfiling();
+    }
+}
+
+function completeDNAProfiling() {
+    // Generate Persona
+    const personas = userDNAAnswers.map(a => a.persona);
+    const primaryPersona = personas[Math.floor(Math.random() * personas.length)]; // Simplified logic
+    window.userPersona = primaryPersona;
+
+    document.getElementById('aiDNAProfile').classList.add('hidden');
+    runMatch(); // Proceed to matching with the new context
+}
+
 // --- AI LOGIC ---
 
 class AIChatEngine {
@@ -160,6 +246,65 @@ function sendChatMessage() {
     chatEngine.sendMessage(text);
 }
 
+function generateCortexReasoning(charity, persona, cause) {
+    if (!persona) return `This charity matches your interest in <strong>${cause}</strong> with a high efficiency rating of ${Math.round(charity.program_expense_ratio * 100)}%.`;
+
+    const reasons = {
+        'Emergency Responder': `Detected priority for <strong>Immediate Speed</strong>. ${charity.name} utilizes rapid-logistics based in ${charity.country}, ensuring aid arrives within 72 hours of crisis triggers.`,
+        'Strategic Philanthropist': `Aligned with your <strong>Systemic Change</strong> focus. Their ${charity.primary_cause} programs are built on 5-year sustainability models rather than temporary fixes.`,
+        'Venture Benefactor': `Matches your <strong>Infrastructure Scaling</strong> DNA. With a revenue of ${new Intl.NumberFormat('en-US', { notation: 'compact' }).format(charity.annual_revenue)}, they have the operational leverage to clone their success across multiple regions.`,
+        'Humanitarian Guardian': `Resonates with your <strong>Direct Aid</strong> values. Their ${Math.round(charity.program_expense_ratio * 100)}% program ratio is in the top 5% of all NGOs globally for dollar-to-life impact.`,
+        'Social Architect': `Your <strong>Policy Shift</strong> interest is reflected in their advocacy branch, which successfully lobbied for 3 major legislative changes in ${charity.country} last year.`,
+        'Empowerment Catalyst': `Focused on <strong>Community Independence</strong>. ${charity.name} employs 90% local staff, ensuring long-term self-sufficiency for the regions they serve.`,
+        'Efficiency Expert': `Aligned with your <strong>Lean Operations</strong> requirement. Their overhead is capped at ${Math.round(charity.admin_expense_ratio * 100)}%, maximizing every cent of your contribution.`,
+        'Integrity Seeker': `Your <strong>Transparency</strong> priority is met by their Trust Score of ${charity.trust_score}/100 and their open-ledger financial policy.`,
+        'Direct Witness': `Matches your <strong>Visibility</strong> DNA. They provide real-time GPS tracking and quarterly video updates for all major ${charity.primary_cause} installations.`
+    };
+
+    return reasons[persona] || `Highly compatible match based on your ${cause} preference and ${charity.name}'s verified financial transparency.`;
+}
+
+class SimulationEngine {
+    constructor(charity) {
+        this.charity = charity;
+    }
+
+    projectImpact(amount) {
+        const efficiency = this.charity.program_expense_ratio || 0.85;
+        const netAid = amount * efficiency;
+
+        // Dynamic metrics based on cause
+        const cause = (this.charity.primary_cause || '').toLowerCase();
+        let metric = 'lives improved';
+        let factor = 1.5;
+
+        if (cause.includes('medical') || cause.includes('health')) {
+            metric = 'medical treatments delivered';
+            factor = 2.2;
+        } else if (cause.includes('child') || cause.includes('education')) {
+            metric = 'months of schooling funded';
+            factor = 4.1;
+        } else if (cause.includes('water')) {
+            metric = 'years of clean water access provided';
+            factor = 0.5;
+        } else if (cause.includes('nutrition') || cause.includes('hunger')) {
+            metric = 'nutritional meals provided';
+            factor = 8.8;
+        }
+
+        return {
+            netAid: netAid.toFixed(2),
+            impactValue: Math.round(netAid * factor),
+            metric: metric,
+            trajectories: [
+                Math.round(netAid * factor * 1.1),
+                Math.round(netAid * factor * 1.3),
+                Math.round(netAid * factor * 1.6)
+            ]
+        };
+    }
+}
+
 function calculateCompatibility(userState, charity) {
     let score = 35; // Granular base
 
@@ -257,9 +402,29 @@ function renderResultsV2(matches, name, loc, cause) {
         return m;
     }).sort((a, b) => b._aiScore - a._aiScore);
 
+    // Show Persona Header if in Advanced Mode
+    if (isAdvancedMode && window.userPersona) {
+        const personaCard = document.createElement('div');
+        personaCard.className = 'card';
+        personaCard.style.cssText = 'background: linear-gradient(135deg, #006C4C, #34A853); color: white; margin-bottom: 24px; border: none;';
+        personaCard.innerHTML = `
+            <div style="display:flex; align-items:center; gap:16px;">
+                 <span class="material-icons-round" style="font-size:48px;">fingerprint</span>
+                 <div>
+                    <div style="font-size:12px; font-weight:700; opacity:0.8; letter-spacing:1px; text-transform:uppercase;">Identified Donor DNA</div>
+                    <div style="font-size:24px; font-family:'Product Sans'; font-weight:700;">${window.userPersona}</div>
+                 </div>
+            </div>
+        `;
+        list.appendChild(personaCard);
+    }
+
     scoredMatches.forEach((m, index) => {
         const uniqueId = 'charity-' + index;
         const aiScore = m._aiScore;
+
+        // Generate Cortex Reasoning
+        const reasoning = generateCortexReasoning(m, window.userPersona, cause);
 
         const revenue = new Intl.NumberFormat('en-US', {
             style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1
@@ -307,6 +472,13 @@ function renderResultsV2(matches, name, loc, cause) {
             <div class="tag-row">
                 <span class="chip" style="background:#E6F4EA; color:#137333; border:none;">Verified NGO</span>
                 <span class="chip">Trust Score: ${m.trust_score}/100</span>
+            </div>
+
+            <div class="cortex-reasoning">
+                <div class="cortex-label">CORTEX REASONING</div>
+                <div style="font-size:13px; color:#444746; line-height:1.5;">
+                    ${reasoning}
+                </div>
             </div>
 
             <!-- TABS NAVIGATION -->
@@ -382,6 +554,21 @@ function renderResultsV2(matches, name, loc, cause) {
                         <span class="material-icons-round" style="font-size:18px;">auto_awesome</span>
                         Ask AI Assistant about this Charity
                     </button>
+
+                    <div class="simulator-box">
+                        <div style="font-size:10px; opacity:0.7; margin-bottom:8px;">[ LIVE IMPACT PROJECTION ]</div>
+                        <div id="${uniqueId}-sim-metric" style="font-size:24px; font-weight:700; color:#fff;">$-- / --</div>
+                        <div id="${uniqueId}-sim-label" style="font-size:12px; opacity:0.7;">Set donation amount to simulate impact...</div>
+                        
+                        <input type="range" min="10" max="10000" value="100" class="impact-slider" 
+                               oninput="updateProjection('${uniqueId}', '${m.name.replace(/'/g, "\\'")}', this.value)">
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:10px; opacity:0.6;">
+                            <span>$10</span>
+                            <span>$10,000</span>
+                        </div>
+                    </div>
+
                     <div class="ai-step">
                         <div class="step-icon">1</div>
                         <div>
@@ -474,4 +661,16 @@ function switchTab(cardId, tabName) {
 
     const map = { 'story': 0, 'financials': 1, 'ai': 2, 'resources': 3 };
     if (buttons[map[tabName]]) buttons[map[tabName]].classList.add('active');
+}
+
+function updateProjection(cardId, charityName, amount) {
+    const charity = charityData.find(c => c.name === charityName);
+    const engine = new SimulationEngine(charity);
+    const result = engine.projectImpact(parseFloat(amount));
+
+    const metricEl = document.getElementById(`${cardId}-sim-metric`);
+    const labelEl = document.getElementById(`${cardId}-sim-label`);
+
+    metricEl.innerText = `${result.impactValue.toLocaleString()} ${result.metric}`;
+    labelEl.innerHTML = `From a <strong>$${parseFloat(amount).toLocaleString()}</strong> donation, <strong>$${result.netAid}</strong> reaches the field.`;
 }

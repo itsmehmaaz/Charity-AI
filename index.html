@@ -90,6 +90,39 @@
                 <span class="material-icons-round">smart_toy</span>
                 Generate Analysis
             </button>
+
+            <div style="margin-top: 24px; text-align: center;">
+                <button onclick="toggleAdvancedMode()" class="btn-secondary-link">
+                    <span class="material-icons-round" style="font-size: 18px;">psychology</span>
+                    Advanced AI Cortex Analysis
+                </button>
+            </div>
+        </div>
+
+        <!-- AI Donor DNA Profile (Survey) -->
+        <div id="aiDNAProfile" class="card hidden">
+            <div class="ai-badge-header">
+                <span class="material-icons-round">biotech</span>
+                AI DNA PROFILING
+            </div>
+            <h2>Donor Persona Assessment</h2>
+            <p style="font-size: 14px; color: var(--md-sys-color-secondary); margin-bottom: 24px;">Our AI Cortex engine will analyze your philanthropic values to generate a unique Donor DNA signature.</p>
+
+            <div id="dnaQuestionContainer">
+                <!-- Questions will be injected here via JS -->
+                 <div class="dna-question active">
+                    <p class="question-text">When crisis strikes, what is your primary concern?</p>
+                    <div class="option-list">
+                        <button class="option-btn" onclick="selectDNAOption('speed')">Immediate Speed of Aid</button>
+                        <button class="option-btn" onclick="selectDNAOption('systemic')">Long-term Systemic Change</button>
+                        <button class="option-btn" onclick="selectDNAOption('scaling')">Scalability of Infrastructure</button>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="dna-progress">
+                <div id="dnaProgressBar" class="dna-progress-fill" style="width: 33%;"></div>
+            </div>
         </div>
 
         <!-- AI Processing State -->
