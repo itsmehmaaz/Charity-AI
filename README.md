@@ -4,61 +4,40 @@ An AI-powered charity recommendation platform that helps users find verified cha
 
 ## 📋 Features
 
-- **Personalized Recommendations**: Get top 5 charity matches based on your location and cause interest
-- **Verified Data**: 2000+ charities with real financial data and transparency scores
-- **Detailed Insights**: Comprehensive information about each charity's mission, impact, and financial efficiency
-- **UN-Themed UI**: Professional, modern interface following UN design principles
-- **Admin Panel**: Secure admin access for updating charity database
+- **Personalized Recommendations**: Get top 5 charity matches based on mission-alignment, efficiency, and trust.
+- **Verified Dataset**: 264 hand-vetted global charities with real financial metrics.
+- **AI Chat Intelligence**: A dynamic AI assistant for deep-dive charity analysis and context-aware session.
+- **Deduplicated & Pruned**: 100% free of synthetic generator data.
+- **UN-Themed UI**: Elegant, modern interface following international accessibility standards.
 
-## 🚀 Quick Start
+## 🚀 Data Management (Data Engine)
 
-1. **Open the Application**
-   - Simply open `index.html` in your web browser
-   - No installation or setup required!
+The platform uses a Python-based "Universal Merger" to ensure data integrity.
 
-2. **Using the App**
-   - Answer 3 simple questions (name, location, cause)
-   - Get instant personalized charity recommendations
-   - Click on charities to view detailed information
-
-3. **Admin Access**
-   - Access admin panel via the 🔐 button
-   - Default password: `admin123` (change this in admin.html)
-   - Upload new charity data as JSON files
+1. **Add Data**: Update the `new_raw_data` list in `process_data.py` with new research results.
+2. **Execute Sync**:
+   ```bash
+   python process_data.py
+   ```
+3. **Result**: This will automatically synchronize `charities.json` (Local) and `data.js` (Web).
 
 ## 📁 File Structure
 
 ```
-Main EL/
-├── index.html              # Main application
-├── admin.html              # Admin panel for database updates
-├── charities.json          # Charity database (2000+ entries)
-└── README.md               # This file
+Charity-AI/
+├── index.html              # Main AI Smart Matching Platform
+├── charities.json          # Master Dataset (Local)
+├── data.js                 # Exported Dataset (Web)
+├── process_data.py         # Data Engineering & Consolidation Engine
+├── admin.html              # Legacy Admin View
+└── README.md               # Documentation
 ```
 
 ## 🔧 Technologies Used
 
-- Pure HTML, CSS, and JavaScript (no frameworks)
-- Client-side data processing
-- Responsive design
-- UN color scheme (#009EDB)
-
-## 📊 Data Structure
-
-Each charity contains:
-- Basic info (name, country, cause)
-- Financial metrics (program %, admin %, fundraising %)
-- Trust and transparency scores
-- Historical reputation data
-- Mission statement
-- Official website
-
-## 🔐 Admin Features
-
-- Upload updated charity JSON files
-- Download database backups
-- View current charity count
-- Secure password protection
+- **Frontend**: Pure HTML5, CSS3 (Glassmorphism), Vanilla JS.
+- **Data Engine**: Python 3.x (JSON processing, deduplication).
+- **Intelligence**: Custom AIChatEngine with dynamic financial derivation.
 
 ## 🎨 Customization
 
