@@ -1,7 +1,7 @@
 {
   "name": "charity-ai-backend",
-  "version": "1.0.0",
-  "description": "API server for CharityAI with simple trend-learning recommender",
+  "version": "3.0.0",
+  "description": "API server for CharityAI with ML-powered Top 50 Elite Charities dataset",
   "main": "server/index.js",
   "type": "commonjs",
   "scripts": {

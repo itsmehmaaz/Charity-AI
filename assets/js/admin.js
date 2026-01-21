@@ -42,7 +42,7 @@ function checkDatabaseStatus() {
         sourceDisplay.style.color = "var(--md-sys-color-primary)";
     } else {
         // Try to guess fetch
-        countDisplay.innerText = "264";
+        countDisplay.innerText = "50";
         sourceDisplay.innerText = "Running on Consolidated Master (data.js)";
     }
 }
