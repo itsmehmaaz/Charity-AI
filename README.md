@@ -86,7 +86,7 @@ Charity-AI/
 
 ### Prerequisites
 - Modern web browser (Chrome, Firefox, Safari, Edge)
-- No server or build tools required - pure static site
+- Optional: Node.js 18+ if you want the ML backend API (trend-learning recommender)
 
 ### Installation
 
@@ -96,7 +96,7 @@ Charity-AI/
    cd Charity-AI
    ```
 
-2. **Open in browser**
+2. **(Option A) Open in browser**
    ```bash
    # Simply open index.html in your browser
    # Or use a local server:
@@ -104,9 +104,21 @@ Charity-AI/
    # Navigate to http://localhost:8000
    ```
 
-3. **Start matching!**
+3. **(Option B) Run ML backend API (recommended)**
+   ```bash
+   npm install
+   npm run start   # starts Express API on http://localhost:4000
+   ```
+   - The frontend auto-detects the API via `http://localhost:4000` and switches to server-side recommendations.
+   - Endpoints:
+     - `GET /api/health` quick status
+     - `GET /api/charities` master dataset (trend-aware copy)
+     - `POST /api/recommendations` body `{ name, location, cause, persona? }`
+     - `POST /api/feedback` body `{ charityId, outcome: "positive"|"negative", signal? }` (updates learning weights)
+
+4. **Start matching!**
    - Enter your name, target region, and cause preference
-   - Click "Generate Analysis" to see top 10 matches
+   - Click "Generate Analysis" to see matches (backend-powered if running)
    - Click any charity card to open AI chat context
 
 ---

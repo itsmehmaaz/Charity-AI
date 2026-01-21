@@ -1,12 +1,13 @@
 // CORE DATA
-const EMBEDDED_FALLBACK_DATA = [];
 let charityData = [];
+const BACKEND_URL = window.BACKEND_URL || 'http://localhost:4000';
+let backendAvailable = false;
 
 // STARTUP
 window.addEventListener('DOMContentLoaded', initApp);
 
 function initApp() {
-    setTimeout(() => {
+    setTimeout(async () => {
         // 1. Try LocalStorage (Admin Updates)
         const localData = localStorage.getItem('GCIP_CharityData');
         if (localData) {
@@ -21,6 +22,9 @@ function initApp() {
             useFallback();
         }
 
+        // 2. Attempt backend bootstrap (overrides local/fallback if reachable)
+        await hydrateFromBackend();
+
         showInput();
     }, 800); // Fake init time for UX
 }
@@ -32,6 +36,24 @@ function useFallback() {
     } else {
         console.error('CRITICAL: data.js not found or corrupted.');
         document.getElementById('loadingState').innerHTML = '<p style="color:red">Error: Charity Data not found.<br>Please ensure data.js is present.</p>';
+    }
+}
+
+async function hydrateFromBackend() {
+    try {
+        const health = await fetch(`${BACKEND_URL}/api/health`, { cache: 'no-store' });
+        if (!health.ok) throw new Error('Health check failed');
+
+        const resp = await fetch(`${BACKEND_URL}/api/charities`, { cache: 'no-store' });
+        if (!resp.ok) throw new Error('Charity load failed');
+        const payload = await resp.json();
+        if (payload && Array.isArray(payload.data)) {
+            charityData = payload.data;
+            backendAvailable = true;
+            console.log('Backend dataset loaded:', payload.data.length, 'records');
+        }
+    } catch (err) {
+        console.warn('Backend unavailable, using local data only', err);
     }
 }
 
@@ -305,37 +327,9 @@ class SimulationEngine {
     }
 }
 
-function calculateCompatibility(userState, charity) {
-    let score = 35; // Granular base
-
-    // Geo Match (Max +25)
-    if (charity.country === userState.location) {
-        score += 25;
-    } else if (charity.operating_regions && charity.operating_regions.includes(userState.location)) {
-        score += 15;
-    }
-
-    // Cause Match (Max +25)
-    const charityCause = (charity.primary_cause || '').toLowerCase();
-    const userCause = (userState.cause || '').toLowerCase();
-
-    if (charityCause === userCause) {
-        score += 25;
-    } else if (userCause === 'health' && (charityCause === 'medical aid' || charityCause === 'nutrition')) {
-        score += 15;
-    }
-
-    // Trust & Efficiency Metrics (Max +15)
-    const trustWeight = (charity.trust_score - 80) / 2; // ~0-10
-    const efficiencyWeight = (charity.program_expense_ratio - 0.7) * 20; // ~0-6
-
-    score += Math.max(0, trustWeight);
-    score += Math.max(0, efficiencyWeight);
-
-    // Add minor realism jitter (+/- 3%)
-    const jitter = (Math.random() * 6) - 3;
-
-    return Math.min(99, Math.max(10, Math.round(score + jitter)));
+function calculateCompatibility() {
+    // Deprecated in favor of backend model. Kept for fallback mode.
+    return Math.round(40 + Math.random() * 30);
 }
 
 // MATCHING LOGIC
@@ -344,27 +338,58 @@ function runMatch() {
     const location = document.getElementById('userLocation').value;
     const cause = document.getElementById('userCause').value;
 
-    // hide input, show processing
     document.getElementById('inputCard').classList.add('hidden');
     document.getElementById('processingState').classList.remove('hidden');
 
+    if (backendAvailable) {
+        runMatchBackend(name, location, cause);
+    } else {
+        runMatchLocal(name, location, cause);
+    }
+}
+
+function runMatchLocal(name, location, cause) {
     setTimeout(() => {
-        // Perform Matching
         const matches = charityData.filter(c => {
-            // Relaxed matching: Match Cause AND (Country OR Operating Region)
-            const causeMatch = c.primary_cause === cause || (cause === 'Health' && c.primary_cause === 'Medical Aid'); // fuzzy cause
+            const causeMatch = c.primary_cause === cause || (cause === 'Health' && c.primary_cause === 'Medical Aid');
             const locationMatch = c.country === location || (c.operating_regions && c.operating_regions.includes(location));
             return causeMatch && locationMatch;
         });
 
-        // AI SCORING & SORTING
         const scoredMatches = matches.map(m => {
-            m._aiScore = calculateCompatibility({ location: location, cause: cause }, m);
+            m._aiScore = calculateCompatibility();
             return m;
         }).sort((a, b) => b._aiScore - a._aiScore);
 
         renderResultsV2(scoredMatches.slice(0, 10), name, location, cause);
-    }, 1500); // Fake processing delay
+    }, 500);
+}
+
+async function runMatchBackend(name, location, cause) {
+    try {
+        const resp = await fetch(`${BACKEND_URL}/api/recommendations`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, location, cause, persona: window.userPersona })
+        });
+
+        if (!resp.ok) throw new Error('Backend recommendation failed');
+        const payload = await resp.json();
+        const results = payload.results || [];
+
+        if (!results.length) {
+            console.warn('Backend returned no matches, using local fallback');
+            backendAvailable = false;
+            runMatchLocal(name, location, cause);
+            return;
+        }
+
+        renderResultsV2(results, name, location, cause);
+    } catch (err) {
+        console.error('Backend unavailable during match, falling back to local', err);
+        backendAvailable = false;
+        runMatchLocal(name, location, cause);
+    }
 }
 
 
